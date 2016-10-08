@@ -1,0 +1,22 @@
+{
+  "name": "kegberry",
+  "version": "1.0.0",
+  "description": "World's coolest IoT keg raspberry pi project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qwertyhunk/kegberry.git"
+  },
+  "author": "qwertyhunk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/qwertyhunk/kegberry/issues"
+  },
+  "homepage": "https://github.com/qwertyhunk/kegberry#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
