@@ -4,6 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var WebSocketServer = require('ws').Server
+  , wss = new WebSocketServer({ port: 8080 });
+
+// Spawn an app for temperature reading
+var spawn = require('child_process').spawn,
+    py    = spawn('python', ['node_modules/Adafruit_Python_DHT-master/examples/get_temperature.py']);
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -56,5 +62,15 @@ app.use(function(err, req, res, next) {
   });
 });
 
+wss.on('connection', function connection(ws) {
+    py.stdout.on('data', function(data){
+    if(data){
+      var outData = JSON.parse(data);
+      if(!outData.error){
+        ws.send(JSON.stringify({"type":"temperature", "data": outData}));
+      }
+    }    
+  });
+});
 
 module.exports = app;
