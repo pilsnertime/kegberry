@@ -62,15 +62,28 @@ app.use(function(err, req, res, next) {
   });
 });
 
+
 wss.on('connection', function connection(ws) {
-    py.stdout.on('data', function(data){
+  console.log("Connected to a socket. Sending temperature readings.")
+  var tempCallback = function(data){
     if(data){
       var outData = JSON.parse(data);
       if(!outData.error){
-        ws.send(JSON.stringify({"type":"temperature", "data": outData}));
+        try {
+          ws.send(JSON.stringify({"type":"temperature", "data": outData}));
+        } catch (e) {
+          if (e.message == "not opened") {
+            console.log("Giving up on sending data on this socket..")
+            py.stdout.removeListener('data', tempCallback);
+          } else {            
+            console.log("error sending data through ws: " + e.message);
+          }
+        }
       }
     }    
-  });
+  };
+  
+  py.stdout.on('data', tempCallback);
 });
 
 module.exports = app;
