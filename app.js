@@ -79,7 +79,7 @@ wss.on('connection', function connection(ws) {
       var outData = JSON.parse(data);
       if(!outData.error){
         try {
-          ws.send(JSON.stringify({"type":"temperature", "data": outData}));
+          ws.send(JSON.stringify({"name":"temperature", "data": outData}));
         } catch (e) {
           if (e.message == "not opened") {
             console.log("Giving up on sending data on this socket..");

@@ -31,8 +31,8 @@ class AddUserMessage extends ClientMessage
     constructor(msg)
     {
         super(msg);
-        if (super.data) {
-            this.name = super.data.name;
+        if (msg.data) {
+            this.userName = msg.data.name;
         }
     }
 }
@@ -42,6 +42,14 @@ class AddUserResponseMessage extends ResponseMessage
     constructor(err, guid)
     {
         super("addUserReponse", err, guid);
+    }
+}
+
+class GetUsersResponseMessage extends ResponseMessage
+{
+    constructor(err, guid)
+    {
+        super("getUsersReponse", err, guid);
     }
 }
 
@@ -94,6 +102,13 @@ function MessageService(users)
             case "addUser":
                 this.users.addUser(new AddUserMessage(parsedMsg), (err, guid) => {
                     responseMsg = new AddUserResponseMessage(err, guid);
+                    this.sendResponse(responseMsg, ws);
+                });
+                break;
+
+            case "getUsers":
+                this.users.getUsers((err, users) => {
+                    responseMsg = new GetUsersResponseMessage(err, users);
                     this.sendResponse(responseMsg, ws);
                 });
                 break;

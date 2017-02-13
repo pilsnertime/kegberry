@@ -6,8 +6,9 @@ function Users(db)
 	this.nosql = DB.load(db);
 
 	this.addUser = (user, callback) => {
+		console.log(user);
 		var guid = Guid.create();
-		if (!user || !user.name) {
+		if (!user || !user.userName) {
 			callback("User object with a 'name' property wasn't passed in!", null);
 		} else {
 			this.nosql.find().make( (builder) => {
