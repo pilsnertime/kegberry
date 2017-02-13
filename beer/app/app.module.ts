@@ -1,3 +1,4 @@
+import { Users } from './users.component';
 import { MessagingService } from './messaging.service';
 import { Weather } from './weather.component';
 import { NgModule }      from '@angular/core';
@@ -11,7 +12,7 @@ import { HomeComponent }   from './home.component';
     HttpModule,
     JsonpModule
   ],
-  declarations: [ HomeComponent, Weather ],
+  declarations: [ HomeComponent, Weather, Users ],
   bootstrap:    [ HomeComponent ],
   providers: [MessagingService]
 })

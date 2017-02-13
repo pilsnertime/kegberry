@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MessagingService, ITemperatureMessage } from './messaging.service';
+import { MessagingService, ITemperatureNotification } from './messaging.service';
 import { Observable } from 'rxjs/Observable';
 import { Weather } from './weather.component';
 
@@ -15,6 +15,7 @@ export class HomeComponent {
   constructor(private messageService: MessagingService) {}
 
   ngOnInit(): void {
+    
   }
 
 }
