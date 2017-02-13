@@ -49,7 +49,7 @@ class GetUsersResponseMessage extends ResponseMessage
 {
     constructor(err, guid)
     {
-        super("getUsersReponse", err, guid);
+        super("getUsersResponse", err, guid);
     }
 }
 
