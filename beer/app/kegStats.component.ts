@@ -1,3 +1,6 @@
+import {Component, Output, Input, EventEmitter} from '@angular/core';  
+import 'rxjs/Rx';
+
 export class KegStatsComponent {
     errorMessage: string;
     mode = 'Observable';
