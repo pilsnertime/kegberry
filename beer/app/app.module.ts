@@ -1,3 +1,4 @@
+import { Weather } from './weather.component';
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule, JsonpModule } from '@angular/http';
@@ -9,7 +10,7 @@ import { HomeComponent }   from './home.component';
     HttpModule,
     JsonpModule
   ],
-  declarations: [ HomeComponent ],
+  declarations: [ HomeComponent, Weather ],
   bootstrap:    [ HomeComponent ]
 })
 
