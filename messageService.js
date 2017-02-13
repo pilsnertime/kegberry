@@ -41,7 +41,7 @@ class AddUserResponseMessage extends ResponseMessage
 {
     constructor(err, guid)
     {
-        super("addUserReponse", err, guid);
+        super("addUserReponse", err, {guid: guid});
     }
 }
 
