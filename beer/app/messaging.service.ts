@@ -1,3 +1,4 @@
+import { IMessage, ITemperatureMessage } from './messaging.service';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { AmbianceStats } from './kegStats.component';
@@ -5,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import * as io from 'socket.io-client';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {BehaviorSubject} from "rxjs/Rx";
+import {Subject} from "rxjs/Rx";
 
 @Injectable()
 export class MessagingService {
@@ -14,7 +15,7 @@ export class MessagingService {
 
     // message streams
     private temperatureMessageName: string = 'temperature';
-    private _temperatureMessage: BehaviorSubject<ITemperatureMessage> = new BehaviorSubject(undefined);
+    private _temperatureMessage: Subject<ITemperatureMessage> = new Subject<ITemperatureMessage>();
     public temperatureMessageStream: Observable<ITemperatureMessage> = this._temperatureMessage.asObservable();
 
     constructor() {
@@ -30,7 +31,7 @@ export class MessagingService {
             // socket.send('I am the client and I\'m listening!');
             
             // Listen for messages
-            this.socket.onmessage = (onMessageEvent) => {
+            this.socket.onmessage = (onMessageEvent: IMessage) => {
                 console.log('Client received a message', onMessageEvent);
                 this.processMessage(onMessageEvent.data)
             };
@@ -44,19 +45,19 @@ export class MessagingService {
     }
 
     processMessage(msg: string): void {
-        let parsedMessage: IMessage;
+        let message: IMessage;
         try {
-            parsedMessage = JSON.parse(msg);
+            message = JSON.parse(msg);
         } catch (e) {
             console.log('Error parsing message:' + e);
         }
 
-        switch(parsedMessage.type) {
+        switch(message.type) {
             case this.temperatureMessageName:
-                this._temperatureMessage.next(parsedMessage.data);
+                this._temperatureMessage.next(message.data);
             break;
             default:
-                console.log('Message type not supported: ' + parsedMessage.type);
+                console.log('Message type not supported: ' + message.type);
             break;
         }
     }
@@ -69,5 +70,5 @@ export interface IMessage {
 
 export interface ITemperatureMessage {
     temperature: number;
-    humity: number;
+    humidity: number;
 }
