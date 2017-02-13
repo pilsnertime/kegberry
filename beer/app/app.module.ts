@@ -1,3 +1,4 @@
+import { MessagingService } from './messaging.service';
 import { Weather } from './weather.component';
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -11,7 +12,8 @@ import { HomeComponent }   from './home.component';
     JsonpModule
   ],
   declarations: [ HomeComponent, Weather ],
-  bootstrap:    [ HomeComponent ]
+  bootstrap:    [ HomeComponent ],
+  providers: [MessagingService]
 })
 
 export class AppModule { }

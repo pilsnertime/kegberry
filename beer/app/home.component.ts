@@ -8,8 +8,7 @@ import { Weather } from './weather.component';
 
 @Component({
   selector: 'my-app',
-  templateUrl: './app/home.component.html',
-  providers: [MessagingService]
+  templateUrl: './app/home.component.html'
 })
 
 export class HomeComponent {
@@ -17,5 +16,5 @@ export class HomeComponent {
 
   ngOnInit(): void {
   }
-  
+
 }
