@@ -4,8 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var WebSocketServer = require('ws').Server
-  , wss = new WebSocketServer({ port: 8080 });
+var users = require('./users.js')("./db/users.nosql");
+var messageService = require('./messageService.js')(users);
+var WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({ port: 8080 });
 
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
@@ -65,7 +67,13 @@ app.use(function(err, req, res, next) {
 
 
 wss.on('connection', function connection(ws) {
-  console.log("Connected to a socket. Sending temperature readings.")
+  console.log("Web socket client connected.");
+
+  ws.on('message', function incoming(message) {
+    console.log('Recieved a message from the client: %s', message);
+    messageService.process(message, ws);
+  });
+
   var tempCallback = function(data){
     if(data){
       var outData = JSON.parse(data);
@@ -74,7 +82,7 @@ wss.on('connection', function connection(ws) {
           ws.send(JSON.stringify({"type":"temperature", "data": outData}));
         } catch (e) {
           if (e.message == "not opened") {
-            console.log("Giving up on sending data on this socket..")
+            console.log("Giving up on sending data on this socket..");
             py.stdout.removeListener('data', tempCallback);
           } else {            
             console.log("error sending data through ws: " + e.message);

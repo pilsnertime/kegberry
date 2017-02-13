@@ -19,7 +19,7 @@ flowmeter.on('finishedPour', function(data){
 });
 
 */
-var users = require('./user.js');
+var users = require('./users.js');
 var pourHistory = require('./pourHistory.js')
 
 users.addUser({name: "Ilshat"}, (err, guid) => {
