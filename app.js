@@ -74,25 +74,7 @@ wss.on('connection', function connection(ws) {
     messageService.process(message, ws);
   });
 
-  var tempCallback = function(data){
-    if(data){
-      var outData = JSON.parse(data);
-      if(!outData.error){
-        try {
-          ws.send(JSON.stringify({"name":"temperature", "data": outData}));
-        } catch (e) {
-          if (e.message == "not opened") {
-            console.log("Giving up on sending data on this socket..");
-            py.stdout.removeListener('data', tempCallback);
-          } else {            
-            console.log("error sending data through ws: " + e.message);
-          }
-        }
-      }
-    }    
-  };
-  
-  py.stdout.on('data', tempCallback);
+  messageService.weatherUpdate(py.stdout, ws);
 });
 
 module.exports = app;

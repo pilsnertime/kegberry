@@ -75,7 +75,7 @@ function MessageService(users)
                 console.log("Error sending data through ws: " + e.message);
             }
         }
-    }
+    };
 
     this.process = (msg, ws) => {
 
@@ -115,7 +115,29 @@ function MessageService(users)
 
             default:
                 responseMsg = new BadRequestResponseMessage("Unknown operation '" + parsedMsg.name + "'");
+                this.sendResponse(responseMsg, ws);
         }
+    };
+
+    this.weatherUpdate = (stdout, ws) => {
+        var tempCallback = function(data){
+            if(data){
+                var outData = JSON.parse(data);
+                if(!outData.error){
+                    try {
+                        ws.send(JSON.stringify({"name":"temperature", "data": outData}));
+                    } catch (e) {
+                        if (e.message == "not opened") {
+                            stdout.removeListener('data', tempCallback);
+                        } else {            
+                            console.log("error sending data through ws: " + e.message);
+                        }
+                    }
+                }
+            }    
+        };
+        
+        stdout.on('data', tempCallback);
     }
 }
 
