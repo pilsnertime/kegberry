@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var users = require('./users.js')("./db/users.nosql");
-var messageService = require('./messageService.js')(users);
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: 8080 });
 
@@ -18,11 +17,18 @@ py.on('error', (err) => {
   console.log("Couldn't spawn temperature polling. Make sure python is installed.")
 });
 
+var flowmeter = require('./flowmeter')({
+	pin: 40,
+	tickCalibration: 0.00089711713,
+	timeBetweenPours: 3000, 
+	notificationMl: 100
+});
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
-
+var messageService = require('./messageService.js')(users, app);
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
@@ -79,6 +85,9 @@ wss.on('connection', function connection(ws) {
   });
 
   messageService.weatherUpdate(py.stdout, ws);
+
+  messageService.pourUpate(flowmeter);
+
 });
 
 module.exports = app;

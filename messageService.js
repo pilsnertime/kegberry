@@ -61,9 +61,10 @@ class BadRequestResponseMessage extends ResponseMessage
     }
 }
 
-function MessageService(users)
+function MessageService(users, app)
 {
     this.users = users;
+    this.app = app;
 
     this.sendResponse = (responseMsg, ws) => {
         try {
@@ -114,6 +115,12 @@ function MessageService(users)
                 break;
 
             case "selectUser":
+                this.users.getUser(parsedMsg.data.id, (err, user) => {
+                    if (!err) {
+                        this.app.locals.currentUser = user;
+                        this.sendResponse({name:"selectUserResponse", data:{}});
+                    }
+                });
                 break;
 
             default:
@@ -141,12 +148,37 @@ function MessageService(users)
         };
         
         stdout.on('data', tempCallback);
-    }
+    };
+
+    this.pourUpdate = (flowmeter, ws) => {
+
+        flowmeter.on('pourUpdate', function(data){
+            ws.send(JSON.stringify({"name":"pourUpdate", "data":{
+                "currentUser": app.locals.currentUser,
+                "incrementalPour": data,
+                "totalPour": 0,
+                "isFinished": false
+            }}));
+            console.log("Keep pouring!!! So far: " + (data*1000).toFixed(1) + " mL");
+        });
+
+        flowmeter.on('finishedPour', function(data){
+            ws.send(JSON.stringify({"name":"pourUpdate", "data":{
+                "currentUser": app.locals.currentUser,
+                "incrementalPour": data,
+                "totalPour": 0,
+                "isFinished": true
+            }}));
+            console.log("Nice pour: " + (data*1000).toFixed(1) + " mL");
+            //total += data;
+            console.log("\nTotal beer drank so far: " + total.toFixed(2) + " Liters");
+        });
+    };
 }
 
-function ExposeMessageService(users)
+function ExposeMessageService(users, app)
 {
-    return new MessageService(users);
+    return new MessageService(users, app);
 }
 
 module.exports = ExposeMessageService;

@@ -1,4 +1,4 @@
-/*
+
 var flowmeter = require('./flowmeter')({
 	pin: 40,
 	tickCalibration: 0.00089711713,
@@ -18,7 +18,7 @@ flowmeter.on('finishedPour', function(data){
 	console.log("\nTotal beer drank so far: " + total.toFixed(2) + " Liters");
 });
 
-*/
+
 var users = require('./users.js');
 var pourHistory = require('./pourHistory.js')
 
