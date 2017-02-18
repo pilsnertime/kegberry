@@ -12,7 +12,11 @@ var WebSocketServer = require('ws').Server,
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
 var spawn = require('child_process').spawn,
-    py    = spawn('python', ['node_modules/Adafruit_Python_DHT-master/examples/get_temperature.py', TEMP_POLLING_SEC]);
+    py    = spawn('py', ['node_modules/Adafruit_Python_DHT-master/examples/get_temperature.py', TEMP_POLLING_SEC]);
+
+py.on('error', (err) => {
+  console.log("Couldn't spawn temperature polling. Make sure python is installed.")
+});
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

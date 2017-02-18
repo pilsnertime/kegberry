@@ -113,6 +113,9 @@ function MessageService(users)
                 });
                 break;
 
+            case "selectUser":
+                break;
+
             default:
                 responseMsg = new BadRequestResponseMessage("Unknown operation '" + parsedMsg.name + "'");
                 this.sendResponse(responseMsg, ws);
