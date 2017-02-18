@@ -170,7 +170,7 @@ function MessageService(users, app)
                 "isFinished": true
             }}));
             console.log("Nice pour: " + (data*1000).toFixed(1) + " mL");
-            //total += data;
+            //xtotal += data;
             console.log("\nTotal beer drank so far: " + total.toFixed(2) + " Liters");
         });
     };

@@ -11,7 +11,7 @@ var WebSocketServer = require('ws').Server,
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
 var spawn = require('child_process').spawn,
-    py    = spawn('py', ['node_modules/Adafruit_Python_DHT-master/examples/get_temperature.py', TEMP_POLLING_SEC]);
+    py    = spawn('python', ['node_modules/Adafruit_Python_DHT-master/examples/get_temperature.py', TEMP_POLLING_SEC]);
 
 py.on('error', (err) => {
   console.log("Couldn't spawn temperature polling. Make sure python is installed.")
@@ -86,7 +86,7 @@ wss.on('connection', function connection(ws) {
 
   messageService.weatherUpdate(py.stdout, ws);
 
-  messageService.pourUpate(flowmeter);
+  messageService.pourUpdate(flowmeter);
 
 });
 
