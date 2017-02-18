@@ -108,6 +108,8 @@ function MessageService(users, app)
                 break;
 
             case "getUsers":
+                console.log("here");
+                console.log(users);
                 this.users.getUsers((err, users) => {
                     responseMsg = new GetUsersResponseMessage(err, users);
                     this.sendResponse(responseMsg, ws);

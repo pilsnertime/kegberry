@@ -27,7 +27,7 @@ function Users(db)
 				});
 			});
 		}
-	}
+	};
 
 	this.getUsers = (callback) => {
 		this.nosql.find().make( (builder) => {
@@ -41,7 +41,7 @@ function Users(db)
 				}
 			);
 		});
-	}
+	};
 
 	this.getUser = (userId, callback) => {
 		this.nosql.find().make( (builder) => {
@@ -54,7 +54,7 @@ function Users(db)
 				}
 			});
 		});
-	}
+	};
 
 }
 
