@@ -26,9 +26,9 @@ var flowmeter = require('./flowmeter')({
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-
+app.locals.users = users;
 var app = express();
-var messageService = require('./messageService.js')(users, app);
+var messageService = require('./messageService.js')(app);
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');

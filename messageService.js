@@ -63,9 +63,9 @@ class BadRequestResponseMessage extends ResponseMessage
 
 function MessageService(users, app)
 {
-    this.users = users;
     this.app = app;
-
+    this.users = app.locals.users;
+    
     this.sendResponse = (responseMsg, ws) => {
         try {
             ws.send(JSON.stringify(responseMsg));
@@ -178,9 +178,9 @@ function MessageService(users, app)
     };
 }
 
-function ExposeMessageService(users, app)
+function ExposeMessageService(app)
 {
-    return new MessageService(users, app);
+    return new MessageService(app);
 }
 
 module.exports = ExposeMessageService;
