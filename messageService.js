@@ -61,11 +61,11 @@ class BadRequestResponseMessage extends ResponseMessage
     }
 }
 
-function MessageService(users, app)
+function MessageService(app)
 {
     this.app = app;
     this.users = app.locals.users;
-    
+
     this.sendResponse = (responseMsg, ws) => {
         try {
             ws.send(JSON.stringify(responseMsg));
