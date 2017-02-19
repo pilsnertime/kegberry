@@ -18,10 +18,13 @@ export class MessagingService {
     public closedStream: Observable<any> = this._onClosed.asObservable();
 
     // message names to server
+    // todo: refactor message names to a stand alone class/interface/
     public GetUsers: string = 'getUsers';
+    public AddUser: string = "addUser";
+    public SelectUser: string = "selectUser";
 
     // message streams
-    private temperatureNotification: string = 'temperature';
+    private temperatureNotification: string = 'weather';
     private _temperatureMessage: Subject<ITemperatureNotification> = new Subject<ITemperatureNotification>();
     public temperatureMessageStream: Observable<ITemperatureNotification> = this._temperatureMessage.asObservable();
 
@@ -64,7 +67,7 @@ export class MessagingService {
             console.log('Error parsing message:' + e);
         }
 
-        switch(message.name) {
+        switch(message.messageName) {
             // notifications
             case this.temperatureNotification:
                 this._temperatureMessage.next(message.data);
@@ -75,7 +78,7 @@ export class MessagingService {
                 this._getUsersResponse.next(message.data);
             break;
             default:
-                console.log('Message type not supported: ' + message.name);
+                console.log('Message notification not supported: ' + message.messageName);
             break;
         }
     }
@@ -86,7 +89,7 @@ export class MessagingService {
 }
 
 export interface IMessage {
-    name: string;
+    messageName: string;
     data: any;
 }
 
@@ -95,12 +98,20 @@ export interface ITemperatureNotification {
     humidity: number;
 }
 
-export interface IGetUsersMessage {
+export interface IAddUserMessageData {
+    name: string;
+}
+
+export interface IAddUserMessage{
     name: string;
 }
 
 export interface IGetUserResponseNotification {
     users: IUser[];
+}
+
+export interface ISelectUserData {
+    id: string;
 }
 
 export interface IUser {

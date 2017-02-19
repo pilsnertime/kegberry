@@ -1,0 +1,17 @@
+.users-container {
+    margin-top: 2em;
+}
+
+.user-container {
+    background-color: #777777;
+    color: white;
+}
+
+.user-container-selected {
+    background-color: #222222;
+    color: white;
+}
+
+.user-container:hover {
+    background-color: #444444;
+}

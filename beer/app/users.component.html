@@ -1,7 +1,11 @@
-<div>
+<div class="users-container">
+    <input (keyup)="onKey($event)">
+    <button (click)="addUser()">Add User</button>
     <ul> 
         <li *ngFor="let user of users">
-            {{user.name}}
+            <div [ngClass]="user.id === selectedUserId ? 'user-container-selected' : 'user-container'"
+                 (click)="userSelected(user)">{{user.name}}
+            </div>
         </li>
     </ul>
 </div>

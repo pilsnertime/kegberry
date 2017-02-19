@@ -1,15 +1,15 @@
 .weather-container {
-    background: black;
+    background: white;
     display: flex;
     flex-direction: column;
 }
 
 .weather-container .temperature {
     font-size: 2em;
-    color: #ffffff;
+    color: #777777;
 }
 
 .weather-container .humidity {
     font-size: 2em;
-    color: #ffffff;
+    color: #777777;
 }
