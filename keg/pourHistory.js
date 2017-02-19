@@ -1,5 +1,5 @@
 var DB = require('nosql');
-var nosql = DB.load('./db/pours.nosql');
+var nosql = DB.load('../db/pours.nosql');
 
 function addPour(pour, callback) {
 

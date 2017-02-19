@@ -3,6 +3,7 @@ var Guid = require('guid');
 
 function Users(db)
 {
+	this.DEFAULT_USER_ID = "default_user";
 	this.nosql = DB.load(db);
 
 	this.addUser = (user, callback) => {
@@ -31,6 +32,7 @@ function Users(db)
 
 	this.getUsers = (callback) => {
 		this.nosql.find().make( (builder) => {
+			builder.where("id", "!=", this.DEFAULT_USER_ID)
 			builder.callback(
 				(err, response) => {
 					if (err) {
@@ -46,6 +48,19 @@ function Users(db)
 	this.getUser = (userId, callback) => {
 		this.nosql.find().make( (builder) => {
 			builder.search('id', userId);
+			builder.callback((err, user) => {
+				if (err) {
+					callback(err, null);
+				} else {
+					callback(null, user);
+				}
+			});
+		});
+	};
+
+	this.getDefaultUser = (callback) => {
+		this.nosql.find().make( (builder) => {
+			builder.search('id', this.DEFAULT_USER_ID);
 			builder.callback((err, user) => {
 				if (err) {
 					callback(err, null);

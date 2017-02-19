@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var users = require('./users.js')("./db/users.nosql");
+var users = require('./keg/users.js')("./db/users.nosql");
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: 8080 });
 
@@ -17,7 +17,7 @@ py.on('error', (err) => {
   console.log("Couldn't spawn temperature polling. Make sure python is installed.")
 });
 
-var flowmeter = require('./flowmeter')({
+var flowmeter = require('./keg/flowmeter')({
 	pin: 40,
 	tickCalibration: 0.00089711713,
 	timeBetweenPours: 3000, 
@@ -25,16 +25,9 @@ var flowmeter = require('./flowmeter')({
 });
 
 var routes = require('./routes/index');
-var users = require('./routes/users');
-app.locals.users = users;
-var app = express();
-var messageService = require('./messageService.js')(app);
-// view engine setup
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+var app = express();
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -76,6 +69,9 @@ app.use(function(err, req, res, next) {
 });
 
 
+app.set("users", users);
+var messageService = require('./keg/messageService.js')(app);
+
 wss.on('connection', function connection(ws) {
   console.log("Web socket client connected.");
 
@@ -86,7 +82,7 @@ wss.on('connection', function connection(ws) {
 
   messageService.weatherUpdate(py.stdout, ws);
 
-  messageService.pourUpdate(flowmeter);
+  messageService.pourUpdate(flowmeter, ws);
 
 });
 
