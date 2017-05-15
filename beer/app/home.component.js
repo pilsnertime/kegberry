@@ -9,25 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require('@angular/core');
-var platform_browser_1 = require('@angular/platform-browser');
-var http_1 = require('@angular/http');
-var home_component_1 = require('./home.component');
-var AppModule = (function () {
-    function AppModule() {
+// Add the RxJS Observable operators we need in this app
+// import './rxjs-operators';
+var HomeComponent = (function () {
+    function HomeComponent() {
     }
-    AppModule = __decorate([
-        core_1.NgModule({
-            imports: [
-                platform_browser_1.BrowserModule,
-                http_1.HttpModule,
-                http_1.JsonpModule
-            ],
-            declarations: [home_component_1.HomeComponent],
-            bootstrap: [home_component_1.HomeComponent]
+    HomeComponent = __decorate([
+        core_1.Component({
+            selector: 'my-app',
+            template: '<h1>Welcome to Kegberry 4000</h1>'
         }), 
         __metadata('design:paramtypes', [])
-    ], AppModule);
-    return AppModule;
+    ], HomeComponent);
+    return HomeComponent;
 }());
-exports.AppModule = AppModule;
-//# sourceMappingURL=app.module.js.map
+exports.HomeComponent = HomeComponent;
+//# sourceMappingURL=home.component.js.map
