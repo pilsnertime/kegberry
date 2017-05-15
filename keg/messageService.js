@@ -81,21 +81,20 @@ class BadRequestResponseMessage extends ResponseMessage
     }
 }
 
-function MessageService(app)
+function MessageService(users)
 {
-    this.users = app.get("users");
-    this.app = app;
+    this.users = users;
 
     this.initialize = () => {
         this.users.getDefaultUser((err, user) => {
             if (!err) {
-                this.app.set("currentUser", user);
+                this.currentUser = user;
             } else {
                 console.log("Error while getting the default user: " + err);
             }
         });
 
-        this.app.set("currentPourTotal", 0);
+        this.currentPourTotal = 0;
     }
 
     this.sendMessage = (responseMsg, ws) => {
@@ -151,9 +150,9 @@ function MessageService(app)
             case "selectUser":
                 this.users.getUser(parsedMsg.data.id, (err, user) => {
                     if (!err) {
-                        this.app.set("currentUser",user);
+                        this.currentUser = user;
                     }
-                    responseMsg = new SelectUserResponseMessage(err, this.app.get("currentUser"));
+                    responseMsg = new SelectUserResponseMessage(err, this.currentUser);
                     this.sendMessage(responseMsg, ws);
                 });
                 break;
@@ -183,8 +182,8 @@ function MessageService(app)
 
         var pourCallback = (litersPoured) => {
             if(litersPoured){
-                this.app.set("currentPourTotal", this.app.get("currentPourTotal") + litersPoured);
-                var notificationMsg = new PourNotificationMessage(this.app.get("currentUser"), litersPoured, this.app.get("currentPourTotal"), false);
+                this.currentPourTotal += litersPoured;
+                var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, false);
                 if(this.sendMessage(notificationMsg, ws)) {
                     flowmeter.removeListener('pourUpdate', pourCallback);
                 }
@@ -193,8 +192,8 @@ function MessageService(app)
 
         var finishedPourCallback = (litersPoured) => {
             if(litersPoured){
-                var notificationMsg = new PourNotificationMessage(this.app.get("currentUser"), litersPoured, this.app.get("currentPourTotal") + litersPoured, true);
-                this.app.set("currentPourTotal", 0);
+                var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal + litersPoured, true);
+                this.currentPourTotal = 0;
                 if(this.sendMessage(notificationMsg, ws)) {
                     flowmeter.removeListener('finishedPour', finishedPourCallback);
                 }
@@ -207,9 +206,9 @@ function MessageService(app)
     };
 }
 
-function ExposeMessageService(app)
+function ExposeMessageService(users)
 {
-    var messageService = new MessageService(app);
+    var messageService = new MessageService(users);
     messageService.initialize();
     return messageService;
 }
