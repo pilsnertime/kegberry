@@ -6,6 +6,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "ws": "^1.1.1"
+    "ws": "^1.1.4",
+    "rpi-gpio": "^0.8.1"
   }
 }
