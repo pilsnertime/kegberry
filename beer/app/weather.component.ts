@@ -1,4 +1,4 @@
-import { MessagingService, ITemperatureMessage } from './messaging.service';
+import { MessagingService, ITemperatureNotification } from './messaging.service';
 import { Component, Injectable } from '@angular/core';
 
 @Component({
@@ -11,15 +11,11 @@ export class Weather {
   private _temperature: number;
   private _humidity: number;
 
-  constructor(@Injectable() _messageService: MessagingService) {
-    _messageService.temperatureMessageStream.subscribe( (msg: ITemperatureMessage) => {
+  constructor(@Injectable() private _messageService: MessagingService) {
+    _messageService.temperatureMessageStream.subscribe( (msg: ITemperatureNotification) => {
       this.temperature = msg.temperature;
       this.humidity = msg.humidity;
     });
-  }
-
-  ngOnInit(): void {
-
   }
 
   get temperature(): number {
