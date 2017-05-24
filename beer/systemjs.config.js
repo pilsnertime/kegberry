@@ -25,6 +25,7 @@
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
       'socket.io-client': 'node_modules/socket.io-client/',
+      '@ng-bootstrap/ng-bootstrap': 'node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
