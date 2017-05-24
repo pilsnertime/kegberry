@@ -1,0 +1,7 @@
+machine learning for drinking behavior
+	-predict how fast and often people drink per session
+	-predict when someone's glass should be empty
+
+button in the kegberry ux to make someone drink
+
+make a graph of people who had drank together on the same session
