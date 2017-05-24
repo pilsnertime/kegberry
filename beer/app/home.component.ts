@@ -14,8 +14,7 @@ import { Weather } from './weather.component';
 export class HomeComponent {
   constructor(private messageService: MessagingService) {}
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void { 
   }
 
 }

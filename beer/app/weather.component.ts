@@ -1,4 +1,4 @@
-import { MessagingService, ITemperatureNotification, IGetUserResponseNotification } from './messaging.service';
+import { MessagingService, ITemperatureNotification } from './messaging.service';
 import { Component, Injectable } from '@angular/core';
 
 @Component({

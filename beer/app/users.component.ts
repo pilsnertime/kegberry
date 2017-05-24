@@ -1,4 +1,4 @@
-import { MessagingService, IGetUserResponseNotification, IUser, IAddUserMessageData, IMessage, ISelectUserData } from './messaging.service';
+import { MessagingService, IGetUserResponse, IUser, IAddUserMessageData, IMessage, ISelectUserData, IAddUserResponse } from './messaging.service';
 import { Component, Injectable } from '@angular/core';
 
 @Component({
@@ -6,7 +6,7 @@ import { Component, Injectable } from '@angular/core';
   templateUrl: './app/users.component.html',
   styleUrls: ['./app/users.component.css']
 })
-export class Users{
+export class Users {
   private _users: IUser[] = [{"name":"tomas", "id":"1212"}];
   private _usernameInput: string = "";
   private _selectedUserId: string = "";
@@ -18,9 +18,15 @@ export class Users{
             this.getUsers();
         });
 
-        this._messagingService.getUsersResponseStream.subscribe((msg: IGetUserResponseNotification) => {
+        this._messagingService.getUsersResponseStream.subscribe((msg: IGetUserResponse) => {
             if (msg !== undefined) {
-                this._users = msg.users;
+                this.users = msg.users;
+            }
+        });
+
+        this._messagingService.addUserResponseStream.subscribe((msg: IAddUserResponse) => {
+            if (msg !== undefined && msg.user !== undefined) {
+                this.users.push(msg.user);
             }
         });
     }
