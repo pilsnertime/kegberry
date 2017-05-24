@@ -1,2 +1,4 @@
 node_modules/
 beer/node_modules/
+beer/app/*js.map
+beer/app/*.js
