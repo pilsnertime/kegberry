@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const fs = require('fs');
 class MyEmitter extends EventEmitter {}
 
 function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notificationMl) {
@@ -23,11 +24,23 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 
 	this.setup = function() {
 
-		this.gpio.setup(self.pin, self.gpio.DIR_IN, self.gpio.EDGE_BOTH, function(err) {
-			if (err) {
-				console.log("Encountered error while setting up GPIO pin: " + err);
-			}
-		});
+        fs.readFile('/proc/cpuinfo', 'utf8', (err, data) => {
+            // Match the last 4 digits of the number following "Revision:"
+            var match = data.match(/Revision\s*:\s*[0-9a-f]*([0-9a-f]{4})/);
+
+            if (!match || match.length == 0)
+            {
+            	console.log("Not running on a Raspberry Pi. Please enable the mock flowmeter to test functionality.");
+            }
+            else
+            {
+	            this.gpio.setup(self.pin, self.gpio.DIR_IN, self.gpio.EDGE_BOTH, function(err) {
+					if (err) {
+						console.log("Encountered error while setting up GPIO pin: " + err);
+					}
+				});
+            }
+        });
 
 		this.gpio.on('change', function(channel, value) {
 			self.litersPoured += self.tickCalibration;

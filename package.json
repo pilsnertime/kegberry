@@ -8,6 +8,7 @@
   "dependencies": {
     "ws": "^1.1.4",
     "rpi-gpio": "^0.8.1",
-    "nosql": "5.0.3"
+    "nosql": "5.0.3",
+    "guid": "0.0.12"
   }
 }

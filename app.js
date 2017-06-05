@@ -1,7 +1,24 @@
-var users = require('./keg/users.js')("./db/users.nosql");
-var pours = require('./keg/pours.js')("./db/pours.nosql");
+var fs = require('fs');
+var os = require('os');
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: 8080 });
+var databaseDir = "../kegberrydb";
+var userDbFile = databaseDir + "/users.nosql";
+var pourDbFile = databaseDir + "/pours.nosql";
+
+// Set up databases if they don't exist
+if (!fs.existsSync(databaseDir)){
+    fs.mkdirSync(databaseDir);
+}
+if (!fs.existsSync(userDbFile)){
+    fs.writeFileSync(userDbFile, "{\"id\":\"default_user\",\"name\":\"Default User\"}" + os.EOL);
+}
+if (!fs.existsSync(pourDbFile)){
+    fs.writeFileSync(pourDbFile, "{}" + os.EOL);
+}
+
+var users = require('./keg/users.js')(userDbFile);
+var pours = require('./keg/pours.js')(pourDbFile);
 
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
