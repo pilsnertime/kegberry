@@ -23,9 +23,9 @@ var pours = require('./keg/pours.js')(pourDbFile);
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
 var spawn = require('child_process').spawn,
-    py    = spawn('python', ['./keg/get_temperature.py', TEMP_POLLING_SEC]);
+    weatherProcess = spawn('python', ['./keg/get_temperature.py', TEMP_POLLING_SEC]);
 
-py.on('error', (err) => {
+weatherProcess.on('error', (err) => {
   console.log("Couldn't spawn temperature polling. Make sure python is installed.")
 });
 
@@ -55,7 +55,7 @@ wss.on('connection', function connection(ws) {
 
   });
 
-  messageService.weatherUpdate(py.stdout, ws);
+  messageService.weatherUpdate(weatherProcess.stdout, ws);
 
   messageService.pourUpdate(flowmeter, ws);
 
