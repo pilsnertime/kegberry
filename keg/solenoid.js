@@ -5,7 +5,7 @@ class Solenoid {
 	constructor(gpio, pin, safetyLimitMs) {
 		this.safetyLimitMs = safetyLimitMs;
 		this.gpio = gpio;
-		this.gpio.setup(pin, gpio.DIR_OUT, write);
+		this.gpio.setup(pin, gpio.DIR_OUT);
 		this.safetyTimer = setTimeout(function(){},0);
 	}
 	
