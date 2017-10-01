@@ -1,3 +1,15 @@
 <div class="pour-progress">
     <ngb-progressbar type="success" [value]="this.progress" [max]=100 [striped]="true">Pouring beer for {{this.currentUserName}}...</ngb-progressbar>
+    <div id="beer-pint-container">
+      <div id="pint">
+        <div id="liquid" [style.height.px]="beerHeightProgress">
+            <div id="bubblesContainer">
+                <div class="bubble" *ngFor="let bubble of bubbles"></div>
+            </div>
+        </div>
+        <div class="beer-foam">
+            <div class="foam" *ngFor="let foam of foams"></div>
+        </div>
+      </div>
+    </div>
 </div>
