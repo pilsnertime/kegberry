@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const fs = require('fs');
+const Configuration = require('./configuration');
 class MyEmitter extends EventEmitter {}
 
 function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notificationMl) {
@@ -90,7 +91,7 @@ function createFlowmeter(params) {
 
 	const myEmitter = new MyEmitter();
 
-	const flowMeter = params.mock
+	const flowMeter = Configuration.MOCK_POURS
 		? new MockFlowMeter(myEmitter, notificationMl)
 		: new FlowMeter(myEmitter, pin, tickCalibration, timeBetweenPours, notificationMl);
 

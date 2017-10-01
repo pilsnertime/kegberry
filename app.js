@@ -29,14 +29,12 @@ weatherProcess.on('error', (err) => {
   console.log("Couldn't spawn temperature polling. Make sure python is installed.")
 });
 
-var MOCK_POURS = false;
-
 var flowmeter = require('./keg/flowmeter')({
 	pin: 40,
 	tickCalibration: 0.00089711713,
 	timeBetweenPours: 3000, 
-	notificationMl: 10,
-  mock: MOCK_POURS
+	notificationMl: 10
 });
 
-var messageService = require('./keg/messageService.js')(wss);
+var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, users, pours);
+messageService.Start();
