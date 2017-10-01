@@ -53,8 +53,8 @@ class MessageService
                 });
                 
                 this.messageChannel = new MessageChannel(ws);
-                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.users, this.pours);
 
+                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.users, this.pours);
                 this.kegEngine.Initialize();
                 this.kegEngine.HandleWeather(this.weatherProcess.stdout);
                 this.kegEngine.HandlePours(this.flowmeter);
