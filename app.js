@@ -36,5 +36,10 @@ var flowmeter = require('./keg/flowmeter')({
 	notificationMl: 10
 });
 
-var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, users, pours);
+var solenoid = require('./keg/solenoid')({
+    pin: 38,
+    safetyLimitMs: 30000
+});
+
+var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, solenoid, users, pours);
 messageService.Start();

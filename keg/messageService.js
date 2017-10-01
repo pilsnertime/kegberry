@@ -27,11 +27,12 @@ class MessageChannel
 
 class MessageService
 {
-    constructor(wss, weatherProcess, flowmeter, users, pours)
+    constructor(wss, weatherProcess, flowmeter, solenoid, users, pours)
     {
         this.wss = wss;
         this.weatherProcess = weatherProcess;
         this.flowmeter = flowmeter;
+        this.solenoid = solenoid;
         this.users = users;
         this.pours = pours;
     }
@@ -52,7 +53,7 @@ class MessageService
                 });
                 
                 this.messageChannel = new MessageChannel(ws);
-                this.kegEngine = new KegEngine(this.messageChannel, this.users, this.pours);
+                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.users, this.pours);
 
                 this.kegEngine.Initialize();
                 this.kegEngine.HandleWeather(this.weatherProcess.stdout);
@@ -126,9 +127,9 @@ class MessageService
     };
 }
 
-function ExposeMessageService(wss, weatherProcess, flowmeter, users, pours)
+function ExposeMessageService(wss, weatherProcess, flowmeter, solenoid, users, pours)
 {
-    return new MessageService(wss, weatherProcess, flowmeter, users, pours);
+    return new MessageService(wss, weatherProcess, flowmeter, solenoid, users, pours);
 }
 
 module.exports = ExposeMessageService;

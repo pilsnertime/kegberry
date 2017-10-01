@@ -73,6 +73,14 @@ class SelectUserResponseMessage extends ResponseMessage
     }
 }
 
+class CurrentUserNotificationMessage extends ResponseMessage
+{
+    constructor(err, user)
+    {
+        super("currentUser", err, !user?undefined:{user: user});
+    }
+}
+
 class BadRequestResponseMessage extends ResponseMessage
 {
     constructor(message)
@@ -90,5 +98,6 @@ module.exports = {
     AddUserResponseMessage: AddUserResponseMessage,
     GetUsersResponseMessage: GetUsersResponseMessage,
     SelectUserResponseMessage: SelectUserResponseMessage,
+    CurrentUserNotificationMessage: CurrentUserNotificationMessage,
     BadRequestResponseMessage: BadRequestResponseMessage
 };
