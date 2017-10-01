@@ -1,18 +1,22 @@
-const {WeatherNotificationMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage} = require('./definitions');
+const {WeatherNotificationMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
+const Configuration = require('./configuration');
 
 class KegEngine {
 
-    constructor(messageChannel, users, pours)
+    constructor(messageChannel, solenoid, users, pours)
     {
         this.messageChannel = messageChannel;
+        this.solenoid = solenoid;
         this.users = users;
         this.pours = pours;
+        this.userTimer = setTimeout(function(){},0);
     }
 
     Initialize() {
-        this.users.getDefaultUser((err, user) => {
+        this.users.getDefaultUser((err, defaultUser) => {
             if (!err) {
-                this.currentUser = user;
+                this.currentUser = defaultUser;
+                this.defaultUser = defaultUser;
             } else {
                 console.log("Error while getting the default user: " + err);
             }
@@ -27,7 +31,7 @@ class KegEngine {
     HandleWeather(weatherChannel) {
         
         var weatherCallback = (data) => {
-            if(data){
+            if (data){
                 var outData = JSON.parse(data);
                 var notificationMsg = new WeatherNotificationMessage(outData.error, outData.data);
                 if (this.messageChannel.SendMessage(notificationMsg)) {
@@ -45,28 +49,37 @@ class KegEngine {
     HandlePours(flowmeter) {
         
         var pourCallback = (litersPoured) => {
-            if(litersPoured){
+            if (litersPoured){
                 this.currentPourTotal += litersPoured;
+
+                //reset the user timer because pouring is a sign of activity
+                clearTimeout(this.userTimer);
+                this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+
                 var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, false);
-                if(this.messageChannel.SendMessage(notificationMsg)) {
+                if (this.messageChannel.SendMessage(notificationMsg)) {
                     flowmeter.removeListener('pourUpdate', pourCallback);
                 }
             }
         };
 
         var finishedPourCallback = (litersPoured) => {
-            if(litersPoured){
+            if (litersPoured){
                 this.currentPourTotal += litersPoured;
                 this.pours.addPour({userId: this.currentUser.id, beerId: "shocktop", amount: this.currentPourTotal}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
-                    }
-                    var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, true);
+                    }                    
                     
                     this.currentPourTotal = 0;
-                    if(this.messageChannel.SendMessage(notificationMsg)) {
-                        flowmeter.removeListener('finishedPour', finishedPourCallback);
-                    }
+                    this.currentUser = this.defaultUser;
+                    var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, true);
+                    this.solenoid.Close((err) => {
+                        clearTimeout(this.userTimer);
+                        if (this.messageChannel.SendMessage(notificationMsg)) {
+                            flowmeter.removeListener('finishedPour', finishedPourCallback);
+                        }
+                    });
                 });
             }
         };
@@ -104,11 +117,25 @@ class KegEngine {
             this.users.getUser(parsedMsg.data.id, (err, user) => {
                 if (!err) {
                     this.currentUser = user;
-                }
-                var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
-                this.messageChannel.SendMessage(responseMsg);
+                    this.solenoid.Open((err) => {
+                        var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
+                        this.messageChannel.SendMessage(responseMsg);
+                        this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+                    });
+                } else {
+                    var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
+                    this.messageChannel.SendMessage(responseMsg);
+                }                
             });
         }
+    }
+
+    DefaultUserNotification() {
+        this.currentUser = this.defaultUser;
+        this.solenoid.Close((err) => {
+            var responseMsg = new CurrentUserNotificationMessage(err, this.currentUser);
+            this.messageChannel.SendMessage(responseMsg);
+        });
     }
 }
 
