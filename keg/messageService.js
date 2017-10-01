@@ -81,26 +81,12 @@ class BadRequestResponseMessage extends ResponseMessage
     }
 }
 
-function MessageService(users, pours)
+function MessageChannel(ws)
 {
-    this.users = users;
-    this.pours = pours;
-
-    this.initialize = () => {
-        this.users.getDefaultUser((err, user) => {
-            if (!err) {
-                this.currentUser = user;
-            } else {
-                console.log("Error while getting the default user: " + err);
-            }
-        });
-
-        this.currentPourTotal = 0;
-    }
-
-    this.sendMessage = (responseMsg, ws) => {
+    this.ws = ws
+    this.sendMessage = (responseMsg) => {
         try {
-            ws.send(JSON.stringify(responseMsg));
+            this.ws.send(JSON.stringify(responseMsg));
         } catch (e) {
             if (e.message == "not opened") {
                 console.log("Socket connection closed before message could be sent..");
@@ -111,6 +97,48 @@ function MessageService(users, pours)
         }
         return false;
     };
+}
+
+function MessageService(wss)
+{
+    this.wss = wss;
+
+    this.initialize = () => {
+
+        this.wss.on('connection', function connection(ws) {
+            console.log("Web socket client connected.");
+
+            ws.on('message', function incoming(message) {
+                console.log('Recieved a message from the client: %s', message);
+                messageService.process(message, ws);
+
+                if (MOCK_POURS)
+                {
+                    messageService.mockPour(message, flowmeter);
+                }
+
+            });
+
+            // notify the engine about a new ws instead of the BS below
+            // have the engine create a listener on weather and pour for each ws.
+            messageService.weatherUpdate(weatherProcess.stdout, ws);
+
+            messageService.pourUpdate(flowmeter, ws);
+
+        });
+
+
+
+        this.users.getDefaultUser((err, user) => {
+            if (!err) {
+                this.currentUser = user;
+            } else {
+                console.log("Error while getting the default user: " + err);
+            }
+        });
+
+        this.currentPourTotal = 0;
+    }
 
     this.process = (msg, ws) => {
 
@@ -239,9 +267,9 @@ function MessageService(users, pours)
     };
 }
 
-function ExposeMessageService(users, pours)
+function ExposeMessageService(wss)
 {
-    var messageService = new MessageService(users, pours);
+    var messageService = new MessageService(wss);
     messageService.initialize();
     return messageService;
 }

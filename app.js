@@ -39,24 +39,4 @@ var flowmeter = require('./keg/flowmeter')({
   mock: MOCK_POURS
 });
 
-var messageService = require('./keg/messageService.js')(users, pours);
-
-wss.on('connection', function connection(ws) {
-  console.log("Web socket client connected.");
-
-  ws.on('message', function incoming(message) {
-    console.log('Recieved a message from the client: %s', message);
-    messageService.process(message, ws);
-
-    if (MOCK_POURS)
-    {
-      messageService.mockPour(message, flowmeter);
-    }
-
-  });
-
-  messageService.weatherUpdate(weatherProcess.stdout, ws);
-
-  messageService.pourUpdate(flowmeter, ws);
-
-});
+var messageService = require('./keg/messageService.js')(wss);
