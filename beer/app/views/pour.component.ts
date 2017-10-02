@@ -1,10 +1,10 @@
-import { MessagingService, IPourNotification } from './messaging.service';
+import { MessagingService, IPourNotification } from './../infrastructure/messaging.service';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
     selector: 'pour-component',
-    templateUrl: './app/pour.component.html',
-    styleUrls: ['./app/pour.component.css']
+    templateUrl: './app/views/pour.component.html',
+    styleUrls: ['./app/views/pour.component.css']
 })
 
 export class Pour {

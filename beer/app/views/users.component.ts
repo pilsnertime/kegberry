@@ -1,10 +1,10 @@
-import { MessagingService, IGetUserResponse, IUser, IAddUserMessageData, IMessage, ISelectUserData, IAddUserResponse } from './messaging.service';
+import { MessagingService, IGetUserResponse, IUser, IAddUserMessageData, IMessage, ISelectUserData, IAddUserResponse } from './../infrastructure/messaging.service';
 import { Component, Injectable } from '@angular/core';
 
 @Component({
   selector: 'users-component',
-  templateUrl: './app/users.component.html',
-  styleUrls: ['./app/users.component.css']
+  templateUrl: './app/views/users.component.html',
+  styleUrls: ['./app/views/users.component.css']
 })
 export class Users {
   private _users: IUser[] = [{"name":"tomas", "id":"1212"}];
