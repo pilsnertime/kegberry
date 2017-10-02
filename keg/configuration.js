@@ -1,5 +1,5 @@
 class Configuration {
-    get MOCK_POURS () { return false };
+    get MOCK_POURS () { return true };
     get USER_TIMEOUT() { return 15000 };
 }
 

@@ -2,9 +2,9 @@ const Configuration = require('./configuration');
 
 class Solenoid {
 
-	constructor(gpio, pin, safetyLimitMs) {
+	constructor(pin, safetyLimitMs) {
+		this.gpio = require('rpi-gpio');
 		this.safetyLimitMs = safetyLimitMs;
-		this.gpio = gpio;
 		this.gpio.setup(pin, gpio.DIR_OUT);
 		this.pin = pin;
 		this.safetyTimer = setTimeout(function(){},0);
@@ -51,11 +51,10 @@ function createSolenoid(params) {
 	
 	var pin = params.pin ? params.pin : 38;
 	var safetyLimitMs = params.safetyLimitMs ? params.safetyLimitMs : 30000
-	var gpio = require('rpi-gpio');
 
 	const solenoid = Configuration.MOCK_POURS
 		? new MockSolenoid()
-		: new Solenoid(gpio, pin, safetyLimitMs);
+		: new Solenoid(pin, safetyLimitMs);
 
 	return solenoid;
 }
