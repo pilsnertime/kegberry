@@ -8,7 +8,7 @@ import {Subject, Observable} from "rxjs/Rx";
 
 @Injectable()
 export class MessagingService {
-    private _url = 'ws://localhost:8080';
+    private _url = 'ws://kegberry:8080';
     private socket: WebSocket;
 
     private _onConnected: Subject<any> = new Subject<any>();
