@@ -1,10 +1,10 @@
-import { MessagingService, ITemperatureNotification } from './messaging.service';
+import { MessagingService, ITemperatureNotification } from './../infrastructure/messaging.service';
 import { Component, Injectable } from '@angular/core';
 
 @Component({
   selector: 'weather-component',
-  templateUrl: './app/weather.component.html',
-  styleUrls: ['./app/weather.component.css']
+  templateUrl: './app/views/weather.component.html',
+  styleUrls: ['./app/views/weather.component.css']
 })
 
 export class Weather {

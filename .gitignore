@@ -1,5 +1,7 @@
 node_modules/
 beer/node_modules/
 beer/app/*js.map
+beer/app/**/*js.map
 beer/app/*.js
+beer/app/**/*.js
 npm-debug.log

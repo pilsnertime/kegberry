@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { AmbianceStats } from './kegStats.component';
 import { Observable } from 'rxjs/Observable';
 import * as io from 'socket.io-client';
 import 'rxjs/add/operator/map';
@@ -9,7 +8,7 @@ import {BehaviorSubject} from "rxjs/Rx";
 
 @Injectable()
 export class SocketService {
-    private _url = 'ws://kegberry:8080';
+    private _url = 'ws://localhost:8080';
     private socket;
     private _temperature: BehaviorSubject<any> = new BehaviorSubject(undefined);
     public temperature: Observable<Array<String>> = this._temperature.asObservable();

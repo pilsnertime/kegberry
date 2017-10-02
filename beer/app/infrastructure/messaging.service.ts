@@ -1,14 +1,14 @@
 import { IMessage, ITemperatureNotification, IGetUserResponse, IPourNotification } from './messaging.service';
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { AmbianceStats } from './kegStats.component';
+import { AmbianceStats } from './../views/kegStats.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 import {Subject, Observable} from "rxjs/Rx";
 
 @Injectable()
 export class MessagingService {
-    private _url = 'ws://kegberry:8080';
+    private _url = 'ws://localhost:8080';
     private socket: WebSocket;
 
     private _onConnected: Subject<any> = new Subject<any>();
