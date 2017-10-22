@@ -5,7 +5,8 @@ import { Weather } from './weather.component';
 
 @Component({
   selector: 'my-app',
-  templateUrl: './app/views/home.component.html'
+  templateUrl: './app/views/home.component.html',
+  styleUrls: ['./app/views/home.component.css']
 })
 
 export class HomeComponent {

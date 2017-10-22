@@ -1,0 +1,8 @@
+.home {
+    background-color: lightblue;
+    height: 100%;
+}
+
+.container-1 {
+    display: flex;
+}
