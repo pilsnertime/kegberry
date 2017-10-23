@@ -8,6 +8,7 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 	this.gpio = require('rpi-gpio');
 	this.pin = pin;
 	this.tickCount = 0;
+	this.calibrateMl = 0;
 	this.tickCalibration = tickCalibration;
 	this.timeBetweenPours = timeBetweenPours;
 	this.notificationMl = notificationMl;
@@ -70,7 +71,12 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 		this.emitter.on('calibrate', (milliliters) => {
 			console.log("calibrate1");
 			self.calibrate = true;
-			self.calibrateMl = milliliters ? milliliters : Configuration.CALIBRATION_ML;
+			if (!milliliters) {
+				self.calibrateMl = Configuration.CALIBRATION_ML;
+			} else {
+				self.calibrateMl = milliliters;				
+			}
+			console.log(self.calibrateMl);
 			self.tickCount = 0;
 		})
 	}
