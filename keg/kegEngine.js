@@ -101,6 +101,11 @@ class KegEngine {
 
     Calibrate(){
         this.flowmeter.emit("calibrate");
+
+        this.solenoid.Open((err) => {
+            clearTimeout(this.userTimer);
+            this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+        });        
     }
 
     FakePour(){
