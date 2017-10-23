@@ -5,6 +5,7 @@ var WebSocketServer = require('ws').Server,
 var databaseDir = "../kegberrydb";
 var userDbFile = databaseDir + "/users.nosql";
 var pourDbFile = databaseDir + "/pours.nosql";
+var kegDbFile = databaseDir + "/keg.nosql";
 
 // Set up databases if they don't exist
 if (!fs.existsSync(databaseDir)){
@@ -16,9 +17,14 @@ if (!fs.existsSync(userDbFile)){
 if (!fs.existsSync(pourDbFile)){
     fs.writeFileSync(pourDbFile, "{}" + os.EOL);
 }
+if (!fs.existsSync(kegDbFile)){
+    fs.writeFileSync(kegDbFile, "{\"beerId\":\"Test Beer Name\", \"description\":\"Best beer\", \"ABV\":5.0, \"IBU\":20, \"SRM\":2,\
+     \"logoURL\":\"https://sapporobeer.com/assets/Uploads/logo-premiumbeer.png\", \"capacityLiters\":58.67, \"consumedLiters\":0.00, \"tickMl\":0.00089711713}" + os.EOL);
+}
 
-var users = require('./keg/users.js')(userDbFile);
-var pours = require('./keg/pours.js')(pourDbFile);
+var userData = require('./keg/users.js')(userDbFile);
+var pourData = require('./keg/pours.js')(pourDbFile);
+var kegData = require('./keg/pours.js')(kegDbFile);
 
 // Spawn an app for temperature reading
 var TEMP_POLLING_SEC = 10;
@@ -33,7 +39,7 @@ var flowmeter = require('./keg/flowmeter')({
 	pin: 40,
 	tickCalibration: 0.00089711713,
 	timeBetweenPours: 3000, 
-	notificationMl: 10
+	notificationMl: 20
 });
 
 var solenoid = require('./keg/solenoid')({
@@ -41,5 +47,5 @@ var solenoid = require('./keg/solenoid')({
     safetyLimitMs: 30000
 });
 
-var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, solenoid, users, pours);
+var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, solenoid, userData, pourData, kegData);
 messageService.Start();

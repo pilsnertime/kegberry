@@ -7,6 +7,7 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 	var self = this;
 	this.gpio = require('rpi-gpio');
 	this.pin = pin;
+	this.tickCount = 0;
 	this.tickCalibration = tickCalibration;
 	this.timeBetweenPours = timeBetweenPours;
 	this.notificationMl = notificationMl;
@@ -18,7 +19,12 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 	this.litersPoured = 0;
 
 	this.finishPour = function() {
-		self.emitter.emit('finishedPour', self.litersPoured);
+		if (!self.calibrate) {
+			self.emitter.emit('finishedPour', self.litersPoured);
+		} else {
+			self.tickCalibration = calibrateMl / self.tickCount;
+			self.emitter.emit('finishedCalibrating', self.tickCalibration);
+		}
 		self.litersPoured = 0;
 		self.notificationTrack = 0;
 	}
@@ -44,16 +50,25 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 		});
 
 		this.gpio.on('change', function(channel, value) {
+			this.tickCount++;
 			self.litersPoured += self.tickCalibration;
 			
 			if(Math.floor((self.litersPoured*1000)/notificationMl) > self.notificationTrack) {
 				self.notificationTrack = Math.floor(self.litersPoured*1000/self.notificationMl);
-				self.emitter.emit('pourUpdate', self.litersPoured);
+				if (!self.calibrate) {
+					self.emitter.emit('pourUpdate', self.litersPoured);
+				}
 			}
 
 			clearTimeout(self.timer);
 		    self.timer = setTimeout(self.finishPour, self.timeBetweenPours);
 		});
+
+		this.emitter.on('calibrate', (milliliters) => {
+			self.calibrate = true;
+			self.calibrateMl = milliliters ? milliliters : Configuration.CALIBRATION_ML;
+			self.tickCount = 0;
+		})
 	}
 }
 

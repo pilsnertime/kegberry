@@ -47,17 +47,17 @@ class MessageService
                     this.process(message, ws);
                     if (Configuration.MOCK_POURS)
                     {
-                        this.mockPour(message);
+                        this.mockPour(message, ws);
                     }
 
                 });
                 
                 this.messageChannel = new MessageChannel(ws);
 
-                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.users, this.pours);
+                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.flowmeter, this.users, this.pours);
                 this.kegEngine.Initialize();
                 this.kegEngine.HandleWeather(this.weatherProcess.stdout);
-                this.kegEngine.HandlePours(this.flowmeter);
+                this.kegEngine.HandlePours();
             });
         }
     }
@@ -96,6 +96,10 @@ class MessageService
                 this.kegEngine.SelectUser(parsedMsg);
                 break;
 
+            case "calibrate":
+                this.kegEngine.Calibrate(parsedMsg);
+                break;
+
             case "fakePour":
                 console.log("Got a fake pour request");
                 break;
@@ -106,7 +110,7 @@ class MessageService
         }
     };
 
-    mockPour(msg) {
+    mockPour(msg, ws) {
         var parsedMsg;
         try 
         {
@@ -121,7 +125,7 @@ class MessageService
         switch(parsedMsg.messageName)
         {
             case "fakePour":
-                this.kegEngine.FakePour(this.flowmeter);
+                this.kegEngine.FakePour();
                 break;
         }
     };
