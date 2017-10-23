@@ -23,7 +23,8 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 		if (!self.calibrate) {
 			self.emitter.emit('finishedPour', self.litersPoured);
 		} else {
-			console.log("calibrate3");
+			console.log(self.tickCount);
+			console.log(self.calibrateMl);			
 			self.tickCalibration = self.calibrateMl / self.tickCount;
 			self.calibrate = false;
 			self.emitter.emit('finishedCalibration', self.tickCalibration);
@@ -53,7 +54,7 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 		});
 
 		this.gpio.on('change', function(channel, value) {
-			console.log("calibrate2");
+			console.log("::"+self.tickCount);
 			self.tickCount++;
 			self.litersPoured += self.tickCalibration;
 			
