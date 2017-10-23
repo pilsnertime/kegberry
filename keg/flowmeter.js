@@ -54,7 +54,7 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 
 		this.gpio.on('change', function(channel, value) {
 			console.log("calibrate2");
-			this.tickCount++;
+			self.tickCount++;
 			self.litersPoured += self.tickCalibration;
 			
 			if(Math.floor((self.litersPoured*1000)/notificationMl) > self.notificationTrack) {
