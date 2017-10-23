@@ -22,7 +22,7 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 		if (!self.calibrate) {
 			self.emitter.emit('finishedPour', self.litersPoured);
 		} else {
-			self.tickCalibration = calibrateMl / self.tickCount;
+			self.tickCalibration = this.calibrateMl / self.tickCount;
 			self.emitter.emit('finishedCalibrating', self.tickCalibration);
 		}
 		self.litersPoured = 0;
