@@ -1,12 +1,13 @@
-const {WeatherNotificationMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
+const {WeatherNotificationMessage, CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
 const Configuration = require('./configuration');
 
 class KegEngine {
 
-    constructor(messageChannel, solenoid, users, pours)
+    constructor(messageChannel, solenoid, flowmeter, users, pours)
     {
         this.messageChannel = messageChannel;
         this.solenoid = solenoid;
+        this.flowmeter = flowmeter;
         this.users = users;
         this.pours = pours;
         this.userTimer = setTimeout(function(){},0);
@@ -46,8 +47,8 @@ class KegEngine {
     ///////////////////
     // POURS
     ///////////////////
-    HandlePours(flowmeter) {
-        
+    HandlePours() {
+
         var pourCallback = (litersPoured) => {
             if (litersPoured){
                 this.currentPourTotal += litersPoured;
@@ -58,10 +59,17 @@ class KegEngine {
 
                 var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, false);
                 if (this.messageChannel.SendMessage(notificationMsg)) {
-                    flowmeter.removeListener('pourUpdate', pourCallback);
+                    this.flowmeter.removeListener('pourUpdate', pourCallback);
                 }
             }
         };
+
+        var calibrationCallback = (tickCalibration) => {
+            var calibrationMessage = new CalibrationResponseMessage(tickCalibration);
+            if (this.messageChannel.SendMessage(calibrationMessage)) {
+                this.flowmeter.removeListener('finishedCalibration', calibrationCallback);
+            }
+        }
 
         var finishedPourCallback = (litersPoured) => {
             if (litersPoured){
@@ -77,21 +85,32 @@ class KegEngine {
                     this.solenoid.Close((err) => {
                         clearTimeout(this.userTimer);
                         if (this.messageChannel.SendMessage(notificationMsg)) {
-                            flowmeter.removeListener('finishedPour', finishedPourCallback);
+                            this.flowmeter.removeListener('finishedPour', finishedPourCallback);
                         }
                     });
                 });
             }
         };
 
-        flowmeter.on('pourUpdate', pourCallback);
+        this.flowmeter.on('pourUpdate', pourCallback);
 
-        flowmeter.on('finishedPour', finishedPourCallback);
+        this.flowmeter.on('finishedCalibration', calibrationCallback);        
+
+        this.flowmeter.on('finishedPour', finishedPourCallback);
     };
 
-    FakePour(flowmeter){
-        flowmeter.emit("fakePour");
+    Calibrate(){
+        this.flowmeter.emit("calibrate");
+
+        this.solenoid.Open((err) => {
+            clearTimeout(this.userTimer);
+            this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+        });        
     }
+
+    FakePour(){
+        this.flowmeter.emit("fakePour");
+    };
 
     ///////////////////
     // USERS
@@ -120,6 +139,7 @@ class KegEngine {
                     this.solenoid.Open((err) => {
                         var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
                         this.messageChannel.SendMessage(responseMsg);
+                        clearTimeout(this.userTimer);
                         this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
                     });
                 } else {

@@ -38,6 +38,16 @@ class PourNotificationMessage extends ResponseMessage
     }
 }
 
+class CalibrationResponseMessage extends ResponseMessage
+{
+    constructor(tickCalibrationMl)
+    {
+        super("calibrationResponse", null, {
+            tickCalibrationMl: tickCalibrationMl
+        });
+    }
+}
+
 class AddUserMessage extends ClientMessage
 {
     constructor(msg)
@@ -99,5 +109,6 @@ module.exports = {
     GetUsersResponseMessage: GetUsersResponseMessage,
     SelectUserResponseMessage: SelectUserResponseMessage,
     CurrentUserNotificationMessage: CurrentUserNotificationMessage,
-    BadRequestResponseMessage: BadRequestResponseMessage
+    BadRequestResponseMessage: BadRequestResponseMessage,
+    CalibrationResponseMessage: CalibrationResponseMessage
 };
