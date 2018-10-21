@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "test": "mocha -s 300 -R spec",
+    "test": "mocha -b -s 300 -R spec",
     "postinstall": "cd beer && npm install"
   },
   "precommit": "test"
