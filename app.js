@@ -1,10 +1,10 @@
 var IS_TEST_ENV = process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test"
 if (IS_TEST_ENV)
-    console.log("Running the kegberry application as a test ಠ_ಠ ... \n\n\n")
+    console.log("Running the kegberry application as a test ಠ_ಠ \n...")
 var fs = require('fs');
 var os = require('os');
 var WebSocketServer = require('ws').Server,
-    wss = new WebSocketServer({ port: 8081 });
+    wss = new WebSocketServer({ port: 8080 });
 var databaseDir = "../kegberrydb";
 var userDbFile = databaseDir + "/users.nosql";
 var pourDbFile = databaseDir + "/pours.nosql";
