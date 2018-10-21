@@ -8,7 +8,7 @@ var databaseDir = IS_TEST_HOST ? "../kegberrydb_test" : "../kegberrydb";
 var userDbFile = databaseDir + "/users.nosql";
 var pourDbFile = databaseDir + "/pours.nosql";
 var kegDbFile = databaseDir + "/keg.nosql";
-
+asdasdasdasdasd
 
 // Set up databases if they don't exist
 if (!fs.existsSync(databaseDir)){
