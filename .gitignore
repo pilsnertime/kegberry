@@ -5,5 +5,4 @@ beer/app/**/*js.map
 beer/app/*.js
 beer/app/**/*.js
 npm-debug.log
-package-lock.json
 .vscode/
