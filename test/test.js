@@ -106,3 +106,22 @@ describe("API Validation", () => {
 
     });    
 });
+
+describe("Frontend /beer Validation", () => {
+    
+    let test_server;
+
+    it('Spin up the front-end server and ensure it keeps running', (done) => {
+        test_server = child_process.spawn("npm.cmd", ["start"], {cwd:"./beer"});
+        test_server.on("exit", (code, signal) => {
+            Assert.equal(code, 0, "Expected a successful 0 return code. Actual error code: " + code);
+            done();
+        });
+        setTimeout(()=>{done()}, 9000);
+    }).timeout(10000);
+
+    afterEach((done) => {
+        test_server.kill();
+        done();
+    });
+});
