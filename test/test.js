@@ -117,8 +117,8 @@ describe("Frontend /beer Validation", () => {
             Assert.equal(code, 0, "Expected a successful 0 return code. Actual error code: " + code);
             done();
         });
-        setTimeout(()=>{done()}, 9000);
-    }).timeout(10000);
+        setTimeout(()=>{done()}, 29000);
+    }).timeout(30000);
 
     afterEach((done) => {
         test_server.kill();
