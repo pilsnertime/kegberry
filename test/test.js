@@ -48,25 +48,44 @@ describe("API Validation", () => {
                 (cb) => {
                     ws.send(JSON.stringify({'messageName': 'getUsers'}), (err) => {
                         ws.on('message', (msg) => {
-                            var users = JSON.parse(msg);
-                            Assert.equal(users.messageName, "getUsersResponse");
-                            console.log(msg);
-                         });
-                        return cb(err);
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "getUsersResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.users != undefined);
+                            Assert.equal(response.data.users.length, 0);
+                            return cb(err); 
+                         });                        
                     });
                 },
                 (cb) => {
                     ws.removeAllListeners("message");
                     ws.send(JSON.stringify({'messageName': 'addUser', 'data': {'name': 'Steven ZHU'}}), (err) => {
                         ws.on('message', (msg) => {
-                            var users = JSON.parse(msg);
-                            Assert.equal(users.messageName, "addUserResponse");
-                            Assert(users.data != undefined);
-                            console.log(msg);
-                            Assert(users.messageName != undefined);
-                         });
-                        return cb(err);
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "addUserResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.user != undefined);
+                            Assert(response.data.user.id != undefined);
+                            Assert.equal(response.data.user.name, "Steven ZHU");
+                            return cb(err);
+                         });                        
+                    });                    
+                },
+                (cb) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'getUsers'}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "getUsersResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.users != undefined);
+                            Assert.equal(response.data.users.length, 1);
+                            Assert.equal(response.data.users[0].name, "Steven ZHU");
+                            return cb(err); 
+                         });                        
                     });
+                },
+                (cb) => {
                     done();
                 }
             ]);
