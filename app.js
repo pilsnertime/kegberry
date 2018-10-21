@@ -1,11 +1,10 @@
-var IS_TEST_ENV = process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test"
-if (IS_TEST_ENV)
-    console.log("Running the kegberry application as a test ಠ_ಠ \n...")
+var IS_BOOTSTRAP_TEST = process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test-bootstrap"
+var IS_TEST_HOST = process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test"
 var fs = require('fs');
 var os = require('os');
 var WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({ port: 8080 });
-var databaseDir = "../kegberrydb";
+var databaseDir = IS_TEST_HOST ? "../kegberrydb_test" : "../kegberrydb";
 var userDbFile = databaseDir + "/users.nosql";
 var pourDbFile = databaseDir + "/pours.nosql";
 var kegDbFile = databaseDir + "/keg.nosql";
@@ -56,7 +55,7 @@ messageService.Start();
 
 // Once we've gone through the whole spin-up workflow without throwing,
 // we can kill our process peacefully to enable the pre-merge validation
-if (IS_TEST_ENV) {
+if (IS_BOOTSTRAP_TEST) {
     console.log("Successfully validated all the workflows of the keberry application ( ͡° ͜ʖ ͡°) !!!")
     process.exit(0);
 }

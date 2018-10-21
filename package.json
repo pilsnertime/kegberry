@@ -3,17 +3,21 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "ws": "^6.1.0",
-    "rpi-gpio": "^1.0.0",
+    "assert": "^1.4.1",
+    "async": "^2.6.1",
+    "guid": "0.0.12",
+    "mocha": "^5.2.0",
     "nosql": "^6.1.0",
-    "guid": "0.0.12"
+    "rimraf": "^2.6.2",
+    "rpi-gpio": "^1.0.0",
+    "ws": "^6.1.0"
   },
   "devDependencies": {
     "pre-commit": "^1.2.2"
   },
-  "scripts":{
+  "scripts": {
     "start": "node app.js",
-    "test": "node app.js test"
+    "test": "mocha -s 300 -R spec"
   },
   "precommit": "test"
 }
