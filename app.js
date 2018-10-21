@@ -1,3 +1,6 @@
+var IS_TEST_ENV = process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test"
+if (IS_TEST_ENV)
+    console.log("Running the kegberry application as a test ಠ_ಠ \n...")
 var fs = require('fs');
 var os = require('os');
 var WebSocketServer = require('ws').Server,
@@ -6,6 +9,7 @@ var databaseDir = "../kegberrydb";
 var userDbFile = databaseDir + "/users.nosql";
 var pourDbFile = databaseDir + "/pours.nosql";
 var kegDbFile = databaseDir + "/keg.nosql";
+
 
 // Set up databases if they don't exist
 if (!fs.existsSync(databaseDir)){
@@ -49,3 +53,10 @@ var solenoid = require('./keg/solenoid')({
 
 var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, solenoid, userData, pourData, kegData);
 messageService.Start();
+
+// Once we've gone through the whole spin-up workflow without throwing,
+// we can kill our process peacefully to enable the pre-merge validation
+if (IS_TEST_ENV) {
+    console.log("Successfully validated all the workflows of the keberry application ( ͡° ͜ʖ ͡°) !!!")
+    process.exit(0);
+}
