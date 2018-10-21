@@ -8,7 +8,7 @@ describe("Basic Server Validation", () => {
     let test_server;
 
     it('Run the application bootstrapping end-to-end', (done) => {
-        test_server = child_process.spawn("node.exe", ["app.js", "test-bootstrap"]);
+        test_server = child_process.spawn("node", ["app.js", "test-bootstrap"]);
         test_server.on("exit", (code, signal) => {
             Assert.equal(code, 0, "Expected a successful 0 return code. Actual error code: " + code);
             done();
@@ -27,7 +27,7 @@ describe("API Validation", () => {
 
     beforeEach((done) => {
         rimraf.sync("../kegberrydb_test")
-        test_server = child_process.spawn("node.exe", ["app.js", "test"]);
+        test_server = child_process.spawn("node", ["app.js", "test"]);
         ws = new WebSocket("ws://localhost:8080");
         ws.on("open", () => {
             done();
