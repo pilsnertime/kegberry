@@ -59,3 +59,5 @@ if (IS_BOOTSTRAP_TEST) {
     console.log("Successfully validated all the workflows of the keberry application ( ͡° ͜ʖ ͡°) !!!")
     process.exit(0);
 }
+
+console.log("Server up and ready to serve (ง’̀-‘́)ง");
