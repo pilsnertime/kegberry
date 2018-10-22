@@ -25,6 +25,7 @@ ws.send(JSON.stringify({'messageName': 'getUsers'}), (err) => {
 
 ### Request API signatures
 Every request made by the client is a websocket message with these expected properties:
+
 Property | Description
 ------------ | -------------
 messageName | [Required] <<i>string</i>> Defines the request type. 
@@ -33,6 +34,7 @@ data | [Optional] <<i>object</i>> API-specific struct that serves as the request
 
 ### Response API signatures
 Websocket clients that made a request will receive an ACK in the form of a personalized result.
+
 Property | Description
 ------------ | -------------
 messageName | <<i>string</i>> Defines the response type. 
@@ -160,27 +162,27 @@ name | <<i>string</i>> Display name.
 	 - [x] Implementation
 	 - [x] Docs
 	 - [x] Tests
-- [] Calibrate API
-	 - [] Implementation
-	 - [] Docs
-	 - [] Tests
-- [] Fake Pour API
-	 - [] Implementation
-	 - [] Docs
-	 - [] Tests
-- [] Weather API
+- [ ] Calibrate API
+	 - [ ] Implementation
+	 - [ ] Docs
+	 - [ ] Tests
+- [ ] Fake Pour API
+	 - [ ] Implementation
+	 - [ ] Docs
+	 - [ ] Tests
+- [ ] Weather API
 	 - [X] Implementation
-	 - [] Docs
-	 - [] Tests
-- [] Pour Notification API
+	 - [ ] Docs
+	 - [ ] Tests
+- [ ] Pour Notification API
 	 - [X] Implementation
-	 - [] Docs
-	 - [] Tests
-- [] Keg Info API
-	 - [] Implementation
-	 - [] Docs
-	 - [] Tests
+	 - [ ] Docs
+	 - [ ] Tests
+- [ ] Keg Info API
+	 - [ ] Implementation
+	 - [ ] Docs
+	 - [ ] Tests
 
 ### Frontend
 - [x] Merge validation test
-- [ ] Something useful? :poop:
+- [ ] :poop:Something useful? 
