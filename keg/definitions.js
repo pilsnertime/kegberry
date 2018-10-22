@@ -21,7 +21,7 @@ class WeatherNotificationMessage extends ResponseMessage
 {
     constructor(err, weatherData)
     {
-        super("weather", err, weatherData);
+        super("weatherNotification", err, weatherData);
     }
 }
 
@@ -63,7 +63,7 @@ class AddUserResponseMessage extends ResponseMessage
 {
     constructor(err, user)
     {
-        super("addUserResponse", err, !user?undefined:{user: user});
+        super("addUserResponse", err, user);
     }
 }
 
@@ -71,7 +71,7 @@ class GetUsersResponseMessage extends ResponseMessage
 {
     constructor(err, users)
     {
-        super("getUsersResponse", err, !users?undefined:{users: users});
+        super("getUsersResponse", err, users);
     }
 }
 
@@ -79,7 +79,7 @@ class SelectUserResponseMessage extends ResponseMessage
 {
     constructor(err, user)
     {
-        super("selectUserResponse", err, !user?undefined:{user: user});
+        super("selectUserResponse", err, user);
     }
 }
 
@@ -87,7 +87,7 @@ class CurrentUserNotificationMessage extends ResponseMessage
 {
     constructor(err, user)
     {
-        super("currentUser", err, !user?undefined:{user: user});
+        super("currentUserNotification", err, user);
     }
 }
 
