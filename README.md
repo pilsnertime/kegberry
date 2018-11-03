@@ -185,4 +185,4 @@ name | <<i>string</i>> Display name.
 
 ### Frontend
 - [x] Merge validation test
-- [ ] :poop:Something useful? 
+- [x] :poop:Something useful? 
