@@ -18,15 +18,15 @@ export class Users {
             this.getUsers();
         });
 
-        this._messagingService.getUsersResponseStream.subscribe((msg: IGetUserResponse) => {
-            if (msg !== undefined) {
-                this.users = msg.users;
+        this._messagingService.getUsersResponseStream.subscribe((response: IGetUserResponse) => {
+            if (response !== undefined) {
+                this.users = response.users;
             }
         });
 
-        this._messagingService.addUserResponseStream.subscribe((msg: IAddUserResponse) => {
-            if (msg !== undefined && msg.user !== undefined) {
-                this.users.push(msg.user);
+        this._messagingService.addUserResponseStream.subscribe((user: IAddUserResponse) => {
+            if (user !== undefined && user !== undefined) {
+                this.users.push(user);
             }
         });
     }
@@ -49,6 +49,11 @@ export class Users {
 
   set users(users: IUser[]) {
       this._users = users;
+  }
+
+  getUserProfileAssetPath(user: IUser, index: number): string {
+      // implement user images
+      return 'url("../assets/profile_' + index + '")';
   }
 
   get usernameInput(): string {

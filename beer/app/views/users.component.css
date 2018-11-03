@@ -1,17 +1,46 @@
 .users-container {
-    margin-top: 2em;
+    padding: 0;
+    margin: 0;
+    display: flex;
 }
 
 .user-container {
-    background-color: #777777;
-    color: white;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 }
 
-.user-container-selected {
-    background-color: #222222;
-    color: white;
+.user-name {
+    color: #444;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold; 
 }
 
-.user-container:hover {
-    background-color: #444444;
+.user-icon {
+    margin: 5px;
+    flex: 1 0 auto;
+    border-radius: 50%;
+    width: 9em;
+    height: 9em;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 9em;
+}
+
+.user-icon-selected {
+    opacity: 0.2;
+    margin: 5px;
+    flex: 1 0 auto;
+    border-radius: 50%;
+    width: 9em;
+    height: 9em;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 9em;
+}
+
+.user-icon:hover {
+    opacity: 0.6;
 }
