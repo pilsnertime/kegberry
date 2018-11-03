@@ -1,13 +1,11 @@
 {
-  "name": "angular-quickstart",
+  "name": "beer",
   "version": "1.0.0",
   "scripts": {
-    "start": "lite-server",
+    "start": "tsc && concurrently \"tsc -w\" \"lite-server\"",
     "lite": "lite-server",
-    "postinstall": "typings install",
     "tsc": "tsc",
-    "tsc:w": "tsc -w",
-    "typings": "typings"
+    "tsc:w": "tsc -w"
   },
   "licenses": [
     {
@@ -16,21 +14,21 @@
     }
   ],
   "dependencies": {
-    "@angular/animations": "^4.1.2",
-    "@angular/common": "^4.1.2",
-    "@angular/compiler": "^4.1.2",
-    "@angular/core": "~4.1.2",
-    "@angular/forms": "~4.1.2",
-    "@angular/http": "~4.1.2",
-    "@angular/platform-browser": "~4.1.2",
-    "@angular/platform-browser-dynamic": "~4.1.2",
-    "@angular/router": "~3.0.2",
+    "@angular/common": "4.4.4",
+    "@angular/compiler": "4.4.4",
+    "@angular/core": "4.4.4",
+    "@angular/forms": "4.4.4",
+    "@angular/http": "4.4.4",
+    "@angular/platform-browser": "4.4.4",
+    "@angular/platform-browser-dynamic": "4.4.4",
+    "@angular/router": "4.4.4",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.25",
-    "angular-in-memory-web-api": "~0.1.5",
+    "@types/node": "^10.12.0",
+    "@types/socket.io": "^1.4.38",
+    "@types/socket.io-client": "^1.4.32",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "flexbox": "0.0.3",
-    "ngx-bootstrap": "^1.6.6",
     "reflect-metadata": "^0.1.8",
     "rxjs": "^5.0.0-beta.12",
     "socket.io-client": "^1.5.0",
@@ -40,7 +38,6 @@
   "devDependencies": {
     "concurrently": "^3.0.0",
     "lite-server": "^2.2.2",
-    "typescript": "^2.0.3",
-    "typings": "^1.4.0"
+    "typescript": "^2.0.3"
   }
 }
