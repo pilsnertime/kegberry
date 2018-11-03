@@ -1,4 +1,4 @@
-const {WeatherNotificationMessage, CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
+const {WeatherNotificationMessage, CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
 const Configuration = require('./configuration');
 
 class KegEngine {
@@ -97,6 +97,13 @@ class KegEngine {
         this.flowmeter.on('finishedCalibration', calibrationCallback);        
 
         this.flowmeter.on('finishedPour', finishedPourCallback);
+    };
+
+    GetLastPours(parsedMsg) {
+        this.pours.getLastPours(parsedMsg.data ? parsedMsg.data.top : 100, (err, pours) => {
+            var responseMsg = new GetLastPoursResponseMessage(err, pours);
+            this.messageChannel.SendMessage(responseMsg);
+        });
     };
 
     Calibrate(){
