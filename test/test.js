@@ -70,7 +70,8 @@ describe("API Validation", () => {
                             var response = JSON.parse(msg);
                             Assert.equal(response.messageName, "getUsersResponse");
                             Assert(response.data != undefined);
-                            Assert.equal(response.data.length, 0);
+                            Assert(response.data.users != undefined);
+                            Assert.equal(response.data.users.length, 0);
                             return cb(err); 
                          });                        
                     });
@@ -95,8 +96,9 @@ describe("API Validation", () => {
                             var response = JSON.parse(msg);
                             Assert.equal(response.messageName, "getUsersResponse");
                             Assert(response.data != undefined);
-                            Assert.equal(response.data.length, 1);
-                            Assert.equal(response.data[0].name, "Steven ZHU");
+                            Assert(response.data.users != undefined);
+                            Assert.equal(response.data.users.length, 1);
+                            Assert.equal(response.data.users[0].name, "Steven ZHU");
                             return cb(err); 
                          });                        
                     });

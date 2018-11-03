@@ -71,7 +71,7 @@ class GetUsersResponseMessage extends ResponseMessage
 {
     constructor(err, users)
     {
-        super("getUsersResponse", err, users);
+        super("getUsersResponse", err, {users: users});
     }
 }
 
@@ -87,7 +87,7 @@ class GetLastPoursResponseMessage extends ResponseMessage
 {
     constructor(err, pours)
     {
-        super("getLastPoursResponse", err, pours);
+        super("getLastPoursResponse", err, {pours: pours});
     }
 }
 
