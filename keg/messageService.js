@@ -96,6 +96,9 @@ class MessageService
                 this.kegEngine.SelectUser(parsedMsg);
                 break;
 
+            case "getLastPours":
+                this.kegEngine.GetLastPours(parsedMsg);
+
             case "calibrate":
                 this.kegEngine.Calibrate(parsedMsg);
                 break;

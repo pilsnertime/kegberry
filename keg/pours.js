@@ -25,11 +25,12 @@ function Pours(db)
 	};
 
 	this.getLastPours = (number, callback) => {
-		if (number < 1) {
+		if (number == undefined || number < 1) {
 			callback("Specify a number greater than zero for last n pours.", null);
 		} else {
 			this.nosql.find().make( (builder) => {
 				builder.sort('timestamp', true);
+				builder.filter((pour) => pour.timestamp > 0);
 				builder.take(number);
 				builder.callback( (err, response) => {
 					if (err) {

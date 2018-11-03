@@ -163,7 +163,18 @@ describe("API Validation", () => {
                 }
             ]);
         }).timeout(10000);
-    });    
+    });
+    
+    // Pour API Tests
+    describe("Pour APIs", () => {
+        it("addUser and getUsers test", (done) => {
+            async.series([
+                (cb) => {
+                    done();
+                }
+            ]);
+        });
+    });
 });
 
 //////////////////////////////////////////
