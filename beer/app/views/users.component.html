@@ -1,6 +1,17 @@
 <!-- <input (keyup)="onKey($event)">
 <button (click)="addUser()">Add User</button> -->
+<add-user-dialog
+    *ngIf="this._addUserDialogActive"
+    (commit)="onAddUserCommit($event)"
+    (cancel)="onAddUserCancel($event)">
+</add-user-dialog>
 <div class="users-container">
+    <div class="user-container">
+        <div class="user-icon-selected"
+             (click)="this._addUserDialogActive = true">
+            +
+        </div>
+    </div>
     <div class="user-container" *ngFor="let user of users; let i = index">
             <img [ngClass]="user.id === selectedUserId ? 'user-icon-selected' : 'user-icon'"
                  [src]="'app/assets/profile_' + i + '.png'"

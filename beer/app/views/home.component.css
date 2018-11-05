@@ -1,3 +1,10 @@
+div
+{
+   font-size: 1rem;
+   color: #000;
+   font-family: Raleway;
+}
+
 .home {
     display: flex;
     justify-content: center;

@@ -10,8 +10,8 @@ export class Users {
   private _users: IUser[] = [{"name":"tomas", "id":"1212"}];
   private _usernameInput: string = "";
   private _selectedUserId: string = "";
-  constructor(@Injectable() private _messagingService: MessagingService) {
-}
+  private _addUserDialogActive: boolean = false;
+  constructor(@Injectable() private _messagingService: MessagingService) {}
 
     ngOnInit(): void {
         this._messagingService.readyStream.subscribe(() => {
@@ -30,18 +30,6 @@ export class Users {
             }
         });
     }
-
-  addUser(): void {
-      let data: IAddUserMessageData = {name: this.usernameInput};
-      this._messagingService.sendMessage({messageName: this._messagingService.AddUser, data: data});
-  }
-
-  userSelected(user: IUser): void {
-      let data: ISelectUserData = {id: user.id};
-      let selectUserMessage: IMessage = {messageName: this._messagingService.SelectUser, data: data};
-      this._messagingService.sendMessage(selectUserMessage);
-      this.selectedUserId = user.id;
-  }
 
   get users(): IUser[] {
       return this._users;
@@ -76,8 +64,24 @@ export class Users {
       this._messagingService.sendMessage({messageName: this._messagingService.GetUsers, data: undefined});
   }
 
-  onKey(event: any) {
-      this._usernameInput = event.target.value;
+  addUser(username: string): void {
+        let data: IAddUserMessageData = {name: username};
+        this._messagingService.sendMessage({messageName: this._messagingService.AddUser, data: data});
+    }
+
+    userSelected(user: IUser): void {
+        let data: ISelectUserData = {id: user.id};
+        let selectUserMessage: IMessage = {messageName: this._messagingService.SelectUser, data: data};
+        this._messagingService.sendMessage(selectUserMessage);
+        this.selectedUserId = user.id;
+    }
+
+  onAddUserCommit(username: string) {
+      this._addUserDialogActive = false;
+      this.addUser(username);
   }
 
+  onAddUserCancel(_: any) {
+      this._addUserDialogActive = false;
+  }
 }
