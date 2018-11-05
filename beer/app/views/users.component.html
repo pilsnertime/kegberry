@@ -14,8 +14,8 @@
     </div>
     <div class="user-container" *ngFor="let user of users; let i = index">
             <img [ngClass]="user.id === selectedUserId ? 'user-icon-selected' : 'user-icon'"
-                 [src]="'app/assets/profile_' + i + '.png'"
-                 (click)="userSelected(user)">
+                 [src]="'app/assets/profile_' + i % 10 + '.png'"
+                 (click)="onUserSelected(user)">
         <div class="user-name">{{user.name}}</div>
     </div>
 </div>

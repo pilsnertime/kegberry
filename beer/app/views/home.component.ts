@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MessagingService, ITemperatureNotification } from './../infrastructure/messaging.service';
+import { MessagingService, ITemperatureNotification, IUser } from './../infrastructure/messaging.service';
 import { Observable } from 'rxjs/Observable';
 import { Weather } from './weather.component';
 
@@ -10,9 +10,19 @@ import { Weather } from './weather.component';
 })
 
 export class HomeComponent {
+  private _pouring: boolean = false;
+
   constructor(private messageService: MessagingService) {}
 
   ngOnInit(): void { 
+  }
+
+  onUserSelected(user: IUser) {
+    this._pouring = true;
+  }
+
+  onPourFinished(_) {
+    this._pouring = false;
   }
 
 }

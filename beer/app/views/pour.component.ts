@@ -1,8 +1,8 @@
 import { MessagingService, IPourNotification } from './../infrastructure/messaging.service';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'pour-component',
+    selector: 'pour',
     templateUrl: './app/views/pour.component.html',
     styleUrls: ['./app/views/pour.component.css']
 })
@@ -13,6 +13,8 @@ export class Pour {
     private _currentUserName: string = 'default user';
     foams = Array(7).fill(0).map((x,i) => i);
     bubbles = Array(6).fill(0).map((x, i) => i);
+
+    @Output() pourFinished = new EventEmitter();
 
     constructor(private _messageService: MessagingService) { 
         this.progress = 0;
@@ -29,6 +31,7 @@ export class Pour {
                     setTimeout(() => {
                         this.progress = 0;
                         this.currentUserName = 'default user'
+                        this.pourFinished.emit();
                     }, 4000);
                 }
             }
@@ -47,7 +50,6 @@ export class Pour {
 
     get beerHeightProgress(): number {
         return this._progress * this._maxBeerHeight / 100;
-        // return 220;
     }
 
     get currentUserName(): string

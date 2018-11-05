@@ -1,11 +1,15 @@
+:host {
+  background: #eeeeee;
+}
+
 .pour-progress {
-    padding: 2em;
+  padding: 2em;
 }
 
 #beer-pint-container {
   position: relative;
   padding: 20px;
-  background-color: lightblue;
+  background-color: #eeeeee;
 }
 
 #pint {

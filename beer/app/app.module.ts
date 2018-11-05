@@ -9,6 +9,7 @@ import { HomeComponent }   from './views/home.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BreweryMixerComponent } from './views/brewery-mixer.component';
 import { AddUserDialogComponent } from './views/add-user-dialog.component';
+import { Pouring } from './views/pouring.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,15 @@ import { AddUserDialogComponent } from './views/add-user-dialog.component';
     JsonpModule,
     NgbModule.forRoot()
   ],
-  declarations: [ HomeComponent, Weather, Users, Pour, BreweryMixerComponent, AddUserDialogComponent ],
+  declarations: [ 
+    HomeComponent,
+    Weather,
+    Users,
+    Pour,
+    BreweryMixerComponent,
+    AddUserDialogComponent,
+    Pouring 
+  ],
   bootstrap:    [ HomeComponent ],
   providers: [MessagingService]
 })
