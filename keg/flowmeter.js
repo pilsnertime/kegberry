@@ -3,13 +3,12 @@ const fs = require('fs');
 const Configuration = require('./configuration');
 class MyEmitter extends EventEmitter {}
 
-function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notificationMl) {
-	var self = this;
-	this.gpio = require('rpi-gpio');
+function FlowMeter(emitter, pin, litersPerTick, timeBetweenPours, notificationMl) {
 	this.pin = pin;
-	this.tickCount = 0;
+	this.calibrationTickCount = 0;
+	this.fakeTickCount = 0;
 	this.calibrateMl = 0;
-	this.tickCalibration = tickCalibration;
+	this.litersPerTick = litersPerTick;
 	this.timeBetweenPours = timeBetweenPours;
 	this.notificationMl = notificationMl;
 	this.emitter = emitter;
@@ -19,107 +18,96 @@ function FlowMeter(emitter, pin, tickCalibration, timeBetweenPours, notification
 	this.notificationTrack = 0;
 	this.litersPoured = 0;
 
-	this.finishPour = function() {
-		if (!self.calibrate) {
-			self.emitter.emit('finishedPour', self.litersPoured);
-		} else {
-			console.log(self.tickCount);
-			console.log(self.calibrateMl);			
-			self.tickCalibration = self.calibrateMl / self.tickCount;
-			self.calibrate = false;
-			self.emitter.emit('finishedCalibration', self.tickCalibration);
-		}
-		self.litersPoured = 0;
-		self.notificationTrack = 0;
+	this.finishPour = () => {
+		if (!this.calibrate) {
+			this.emitter.emit('finishedPour', this.litersPoured);
+		} else {		
+			this.litersPerTick = this.calibrateMl / 1000 / this.calibrationTickCount;
+			this.calibrate = false;
+			console.log(`Finished calibration. New litersPerTick: ${this.litersPerTick}`)
+			this.emitter.emit('finishedCalibration', this.litersPerTick);
+		}		
+		this.fakeTickCount = 0;
+		this.litersPoured = 0;
+		this.notificationTrack = 0;
 	}
 
-	this.setup = function() {
+	this.setup = () => {
 
 		fs.readFile('/proc/cpuinfo', 'utf8', (err, data) => {
-			// Match the last 4 digits of the number following "Revision:"
-			var match = data.match(/Revision\s*:\s*[0-9a-f]*([0-9a-f]{4})/);
+			var match;
+
+			if (data != undefined) {
+				// Match the last 4 digits of the number following "Revision:"
+				var match = data.match(/Revision\s*:\s*[0-9a-f]*([0-9a-f]{4})/);
+			}
 
 			if (!match || match.length == 0)
 			{
-				console.log("Not running on a Raspberry Pi. Please enable the mock flowmeter to test functionality.");
+				console.log("Not running on a Raspberry Pi. Enabling a mock pour.");
+				if (!Configuration.MOCK_POURS)
+					throw "Mock pours is disabled!!";
+				this.gpio = new MyEmitter();
 			}
 			else
 			{
-				this.gpio.setup(self.pin, self.gpio.DIR_IN, self.gpio.EDGE_BOTH, function(err) {
+				this.gpio = require('rpi-gpio');
+				this.gpio.setup(this.pin, this.gpio.DIR_IN, this.gpio.EDGE_BOTH, (err) => {
 					if (err) {
 						console.log("Encountered error while setting up GPIO pin: " + err);
 					}
 				});
 			}
-		});
 
-		this.gpio.on('change', function(channel, value) {
-			console.log("::"+self.tickCount);
-			self.tickCount++;
-			self.litersPoured += self.tickCalibration;
-			
-			if(Math.floor((self.litersPoured*1000)/notificationMl) > self.notificationTrack) {
-				self.notificationTrack = Math.floor(self.litersPoured*1000/self.notificationMl);
-				if (!self.calibrate) {
-					self.emitter.emit('pourUpdate', self.litersPoured);
+			this.gpio.on('change', (channel, value) => {
+				if (this.calibrate) { this.calibrationTickCount++; }
+				this.litersPoured += this.litersPerTick;				
+				var notificationCount = Math.floor((this.litersPoured*1000)/notificationMl);
+				if (notificationCount > this.notificationTrack) {
+					this.notificationTrack = notificationCount;
+					if (!this.calibrate) {
+						this.emitter.emit('pourUpdate', this.litersPoured);
+					}
+				}
+	
+				clearTimeout(this.timer);
+				this.timer = setTimeout(this.finishPour, this.timeBetweenPours);
+			});
+	
+			this.emitter.on('calibrate', (milliliters) => {
+				console.log(`Starting calibration with a ${milliliters} mL pour. Old liters per tick: ${this.litersPerTick}`);
+				this.calibrate = true;
+				if (!milliliters) {
+					this.calibrateMl = Configuration.CALIBRATION_ML;
+				} else {
+					this.calibrateMl = milliliters;				
+				}
+				this.calibrationTickCount = 0;
+			});
+
+			this.fakePour = () => {
+				this.fakeTickCount++;
+				if (this.fakeTickCount <= 500 + (Math.random()-0.5)*50) {
+					this.gpio.emit('change', "blah");		
+					setTimeout(this.fakePour, 15);
 				}
 			}
 
-			clearTimeout(self.timer);
-		    self.timer = setTimeout(self.finishPour, self.timeBetweenPours);
+			this.emitter.on('fakePour', this.fakePour);
 		});
-
-		this.emitter.on('calibrate', (milliliters) => {
-			console.log("calibrate1");
-			self.calibrate = true;
-			if (!milliliters) {
-				self.calibrateMl = Configuration.CALIBRATION_ML;
-			} else {
-				self.calibrateMl = milliliters;				
-			}
-			console.log(self.calibrateMl);
-			self.tickCount = 0;
-		})
-	}
-}
-
-function MockFlowMeter(emitter, notificationMl) {
-	this.updateMs = notificationMl/50*1000;
-	this.notificationMl = notificationMl;
-	this.count = 0;
-	this.emitter = emitter;
-	this.pourUpdate = () => {
-		this.count++;
-		if (this.count <= 500/this.notificationMl) {
-			this.emitter.emit('pourUpdate', this.notificationMl/1000);		
-			setTimeout(this.pourUpdate, this.updateMs);
-		} else {
-			this.finishPour();
-		}
-	}
-
-	this.finishPour = () => {
-		this.emitter.emit('finishedPour', this.notificationMl/1000);
-		this.count = 0;
-	}
-
-	this.setup = () => {
-		this.emitter.on('fakePour', this.pourUpdate);
 	}
 }
 
 function createFlowmeter(params) {
 
 	var pin = params.pin ? params.pin : 40;
-	var tickCalibration = params.tickCalibration ? params.tickCalibration : 0.00223;
+	var litersPerTick = params.litersPerTick ? params.litersPerTick : 0.00223;
 	var timeBetweenPours = params.timeBetweenPours ? params.timeBetweenPours : 3000;
 	var notificationMl = params.notificationMl ? params.notificationMl : 50;
 
 	const myEmitter = new MyEmitter();
 
-	const flowMeter = Configuration.MOCK_POURS
-		? new MockFlowMeter(myEmitter, notificationMl)
-		: new FlowMeter(myEmitter, pin, tickCalibration, timeBetweenPours, notificationMl);
+	const flowMeter = new FlowMeter(myEmitter, pin, litersPerTick, timeBetweenPours, notificationMl);
 
 	flowMeter.setup();
 
