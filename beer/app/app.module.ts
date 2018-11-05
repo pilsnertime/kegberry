@@ -8,17 +8,25 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { HomeComponent }   from './views/home.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { BreweryMixerComponent } from './views/brewery-mixer.component';
-//import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AddUserDialogComponent } from './views/add-user-dialog.component';
+import { Pouring } from './views/pouring.component';
 
 @NgModule({
   imports: [
     BrowserModule,
     HttpModule,
     JsonpModule,
-    NgbModule.forRoot(),
-    //BrowserAnimationsModule
+    NgbModule.forRoot()
   ],
-  declarations: [ HomeComponent, Weather, Users, Pour, BreweryMixerComponent ],
+  declarations: [ 
+    HomeComponent,
+    Weather,
+    Users,
+    Pour,
+    BreweryMixerComponent,
+    AddUserDialogComponent,
+    Pouring 
+  ],
   bootstrap:    [ HomeComponent ],
   providers: [MessagingService]
 })

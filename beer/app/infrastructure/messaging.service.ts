@@ -4,7 +4,7 @@ import { Http, Response } from '@angular/http';
 import { AmbianceStats } from './../views/kegStats.component';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
-import {Subject, Observable} from "rxjs/Rx";
+import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
 
 @Injectable()
 export class MessagingService {
@@ -32,8 +32,8 @@ export class MessagingService {
     public temperatureMessageStream: Observable<ITemperatureNotification> = this._temperatureMessage.asObservable();
 
     private getUsersResponse: string = 'getUsersResponse';
-    private _getUsersResponse: Subject<IGetUserResponse> = new Subject<IGetUserResponse>();
-    public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable();
+    private _getUsersResponse: BehaviorSubject<IGetUserResponse> = new BehaviorSubject<IGetUserResponse>(undefined);
+    public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable().filter(res => !!res);
     private addUserResponse: string = 'addUserResponse';
     private _addUserResponseStream: Subject<IAddUserResponse> = new Subject<IAddUserResponse>();
     public addUserResponseStream: Observable<IAddUserResponse> = this._addUserResponseStream.asObservable();
@@ -96,6 +96,7 @@ export class MessagingService {
     }
 
     sendMessage(msg: IMessage) {
+        console.log(msg);
         this.socket.send(JSON.stringify(msg));
     }
 }
@@ -122,8 +123,7 @@ export interface IGetUserResponse {
     users: IUser[];
 }
 
-export interface IAddUserResponse {
-    user: IUser;
+export interface IAddUserResponse extends IUser {
 }
 
 export interface ISelectUserData {

@@ -1,0 +1,63 @@
+:host {
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+    position: absolute;
+    background: gray;
+    padding: 1em;
+    background: white;
+    border-radius: 2%;
+    z-index: 2;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    margin-top: 2rem;
+}
+
+.username-label {
+    font-family: Raleway;
+    font-size: 3em;
+    font-weight: bold;
+    outline: none;
+    text-align: center;
+}
+
+input[type=username] {
+    font-family: Raleway;
+    font-size: 3em;
+    font-weight: bold;
+    border: none;
+    text-align: center;
+    margin: 1rem;
+    outline: none;
+}
+
+.action-buttons {
+    display: flex;
+}
+
+.commit-button {
+    display: flex;
+    background: #444444;
+    border: none;
+    height: 2em;
+    width: 100%;
+    color: white;
+    font-size: 1em;
+    margin-left: 1em;
+    margin-right: 1em;
+    font-family: Raleway;
+    font-weight: bold;
+}
+
+.cancel-button {
+    display: flex;
+    background: #444444;
+    border: none;
+    height: 2em;
+    width: 100%;
+    color: white;
+    font-size: 1em;
+    margin-left: 1em;
+    font-family: Raleway;
+    font-weight: bold;
+}

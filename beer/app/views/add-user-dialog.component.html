@@ -1,0 +1,6 @@
+<label class="username-label">What's your name?</label>
+<input type="username" (keyup)="onKey($event)">
+<div class="action-buttons">
+    <button class="cancel-button" (click)="onCancel()">Cancel</button>
+    <button class="commit-button" (click)="onCommit()">Ok</button>
+</div>
