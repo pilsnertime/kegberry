@@ -40,10 +40,10 @@ class PourNotificationMessage extends ResponseMessage
 
 class CalibrationResponseMessage extends ResponseMessage
 {
-    constructor(tickCalibrationMl)
+    constructor(litersPerTick)
     {
         super("calibrationResponse", null, {
-            tickCalibrationMl: tickCalibrationMl
+            litersPerTick: litersPerTick
         });
     }
 }

@@ -2,7 +2,9 @@ class Configuration {
     get IS_BOOTSTRAP_TEST () { return process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test-bootstrap" }
     get IS_TEST_HOST () { return process.argv.slice(2).length > 0 && process.argv.slice(2)[0] == "test" }
     get MOCK_POURS () { return this.IS_BOOTSTRAP_TEST || this.IS_TEST_HOST };
-    get USER_TIMEOUT() { return this.IS_TEST_HOST ? 3000 : 15000 };
+    get USER_TIMEOUT() { return this.IS_TEST_HOST ? 3000 : 10000 };
+    get CALIBRATION_TIMEOUT() { return this.IS_TEST_HOST ? 10000 : 15000 };
+    get TIME_BETWEEN_POURS() { return this.MOCK_POURS ? 500 : 3000 };
     get CALIBRATION_ML() { return 237 };
     get DATABASE_DIR () { return this.IS_TEST_HOST ? "../kegberrydb_test" : "../kegberrydb" };
     get USERS_DB_FILE () { return this.DATABASE_DIR + "/users.nosql" };

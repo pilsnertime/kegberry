@@ -23,7 +23,7 @@ class KegEngine {
             }
         });
 
-        this.currentPourTotal = 0;
+        this.lastPourUpdateLiters = 0;
     }
 
     ///////////////////
@@ -51,21 +51,20 @@ class KegEngine {
 
         var pourCallback = (litersPoured) => {
             if (litersPoured){
-                this.currentPourTotal += litersPoured;
-
                 //reset the user timer because pouring is a sign of activity
                 clearTimeout(this.userTimer);
                 this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
 
-                var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, false);
+                var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured - this.lastPourUpdateLiters, litersPoured, false);
+                this.lastPourUpdateLiters = litersPoured;
                 if (this.messageChannel.SendMessage(notificationMsg)) {
                     this.flowmeter.removeListener('pourUpdate', pourCallback);
                 }
             }
         };
 
-        var calibrationCallback = (tickCalibration) => {
-            var calibrationMessage = new CalibrationResponseMessage(tickCalibration);
+        var calibrationCallback = (litersPerTick) => {
+            var calibrationMessage = new CalibrationResponseMessage(litersPerTick);
             if (this.messageChannel.SendMessage(calibrationMessage)) {
                 this.flowmeter.removeListener('finishedCalibration', calibrationCallback);
             }
@@ -73,21 +72,16 @@ class KegEngine {
 
         var finishedPourCallback = (litersPoured) => {
             if (litersPoured){
-                this.currentPourTotal += litersPoured;
-                this.pours.addPour({userId: this.currentUser.id, beerId: "shocktop", amount: this.currentPourTotal}, (err, res) => {
+                this.pours.addPour({userId: this.currentUser.id, beerId: "serengeti", amount: litersPoured}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
-                    }                    
-                    
-                    this.currentPourTotal = 0;
-                    this.currentUser = this.defaultUser;
-                    var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured, this.currentPourTotal, true);
-                    this.solenoid.Close((err) => {
-                        clearTimeout(this.userTimer);
-                        if (this.messageChannel.SendMessage(notificationMsg)) {
-                            this.flowmeter.removeListener('finishedPour', finishedPourCallback);
-                        }
-                    });
+                    }
+
+                    var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured - this.lastPourUpdateLiters, litersPoured, true);
+                    this.lastPourUpdateLiters = 0;
+                    if (this.messageChannel.SendMessage(notificationMsg)) {
+                        this.flowmeter.removeListener('finishedPour', finishedPourCallback);
+                    }
                 });
             }
         };
@@ -111,8 +105,8 @@ class KegEngine {
 
         this.solenoid.Open((err) => {
             clearTimeout(this.userTimer);
-            this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
-        });        
+            this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.CALIBRATION_TIMEOUT);
+        });
     }
 
     FakePour(){
@@ -160,6 +154,7 @@ class KegEngine {
     DefaultUserNotification() {
         this.currentUser = this.defaultUser;
         this.solenoid.Close((err) => {
+            clearTimeout(this.userTimer);
             var responseMsg = new CurrentUserNotificationMessage(err, this.currentUser);
             this.messageChannel.SendMessage(responseMsg);
         });
