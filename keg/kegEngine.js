@@ -72,7 +72,7 @@ class KegEngine {
 
         var finishedPourCallback = (litersPoured) => {
             if (litersPoured){
-                this.pours.addPour({userId: this.currentUser.id, beerId: "shocktop", amount: litersPoured}, (err, res) => {
+                this.pours.addPour({userId: this.currentUser.id, beerId: "serengeti", amount: litersPoured}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
                     }
