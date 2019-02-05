@@ -1,29 +1,7 @@
 var KegEngine = require('./kegEngine');
 const Configuration = require('./configuration');
-const {BadRequestResponseMessage} = require('./definitions');
-
-class MessageChannel
-{
-    constructor(ws)
-    {
-        this.ws = ws;
-    }    
-
-    // Send message on the websocket channel. Returns true if the connection closed.
-    SendMessage(responseMsg) {
-        try {
-            this.ws.send(JSON.stringify(responseMsg));
-        } catch (e) {
-            if (e.message == "not opened") {
-                console.log("Socket connection closed before message could be sent..");
-                return true;
-            } else {            
-                console.log("Error sending data through ws: " + e.message);
-            }
-        }
-        return false;
-    };
-}
+const Websocket = require('ws');
+const {BadRequestResponseMessage, WeatherNotificationMessage} = require('./definitions');
 
 class MessageService
 {
@@ -37,32 +15,47 @@ class MessageService
         this.pours = pours;
     }
 
+    Brooadcast(msg) {
+        this.wss.clients.forEach((client) => {
+            if (client.readyState === Websocket.OPEN) {
+                MessageService._sendMessage(msg, client);
+            }
+        });
+    };
+
     Start() {
         if (!this.kegEngine) {
-            this.wss.on('connection', (ws) => {
-                console.log("Web socket client connected.");
-
-                ws.on('message', (message) => {
-                    console.log('Recieved a message from the client: %s', message);
-                    this.process(message, ws);
-                    if (Configuration.MOCK_POURS)
-                    {
-                        this.mockPour(message, ws);
-                    }
-
-                });
-                
-                this.messageChannel = new MessageChannel(ws);
-
-                this.kegEngine = new KegEngine(this.messageChannel, this.solenoid, this.flowmeter, this.users, this.pours);
-                this.kegEngine.Initialize();
-                this.kegEngine.HandleWeather(this.weatherProcess.stdout);
-                this.kegEngine.HandlePours();
-            });
+            this.kegEngine = new KegEngine(this.solenoid, this.flowmeter, this.users, this.pours);
+            this.kegEngine.Initialize((msg) => {this.Brooadcast(msg)});
         }
-    }
 
-    process(msg, ws) {
+        this.wss.on('connection', (ws) => {
+            console.log("Web socket client connected.");
+
+            ws.on('message', (message) => {
+                console.log('Recieved a message from the client: %s', message);
+                this._process(message, ws);
+            });              
+        });
+
+        this._weatherBroadcasts();
+    };
+
+    static _sendMessage(msg, client) {
+        try {
+            client.send(JSON.stringify(msg), (error) => {
+                if (error) { 
+                    console.log(error);
+                    client.terminate();
+                }                        
+            });
+        } catch (e) {
+            console.log(e.message);
+            client.terminate();
+        }
+    };
+
+    _process(msg, ws) {
 
         var parsedMsg;
         try 
@@ -72,64 +65,72 @@ class MessageService
         catch (e)
         {
             var responseMsg = new BadRequestResponseMessage("Failed to parse message: " + e.message);
-            this.messageChannel.SendMessage(responseMsg, ws);
+            MessageService._sendMessage(responseMsg, ws);
             return;
         } 
 
         if (parsedMsg && !parsedMsg.messageName){
             var responseMsg = new BadRequestResponseMessage("All messages must contain a 'messageName' property");
-            this.messageChannel.SendMessage(responseMsg, ws);
+            MessageService._sendMessage(responseMsg, ws);
             return;
         }
+
+        var broadcast = (data) => {this.Brooadcast(data);};
+        var personal = (data) => {MessageService._sendMessage(data, ws);};
 
         switch(parsedMsg.messageName)
         {
             case "addUser":
-                this.kegEngine.AddUser(parsedMsg);
+                this.kegEngine.AddUser(parsedMsg, broadcast, personal);
                 break;
 
             case "getUsers":
-                this.kegEngine.GetUsers(parsedMsg);
+                this.kegEngine.GetUsers(parsedMsg, broadcast, personal);
                 break;
 
             case "selectUser":
-                this.kegEngine.SelectUser(parsedMsg);
+                this.kegEngine.SelectUser(parsedMsg, broadcast, personal);
                 break;
 
             case "getLastPours":
-                this.kegEngine.GetLastPours(parsedMsg);
+                this.kegEngine.GetLastPours(parsedMsg, broadcast, personal);
 
             case "calibrate":
-                this.kegEngine.Calibrate(parsedMsg);
+                this.kegEngine.Calibrate(parsedMsg, broadcast, personal);
                 break;
 
             case "fakePour":
-                console.log("Got a fake pour request");
+                this.kegEngine.FakePour();
                 break;
 
             default:
                 var responseMsg = new BadRequestResponseMessage("Unknown operation '" + parsedMsg.messageName + "'");
-                this.messageChannel.SendMessage(responseMsg, ws);
+                MessageService._sendMessage(responseMsg, ws);
         }
     };
 
-    mockPour(msg, ws) {
-        var parsedMsg;
-        try 
+    _weatherBroadcasts() {
+        if (Configuration.IS_TEST_HOST)
         {
-            parsedMsg = JSON.parse(msg);
-        } 
-        catch (e)
+            var fakeWeatherCallback = () => {
+                this.Brooadcast(new WeatherNotificationMessage(null, {"temperature": (Math.random()+7), "humidity": (Math.random()+50)}));
+                setTimeout(fakeWeatherCallback, Configuration.TEMP_POLLING_SEC * 1000);
+            }
+            fakeWeatherCallback();
+        }
+        else
         {
-            var responseMsg = new BadRequestResponseMessage("Failed to parse message: " + e.message);
-            this.messageChannel.SendMessage(responseMsg, ws);
-            return;
-        } 
-        switch(parsedMsg.messageName)
-        {
-            case "fakePour":
-                this.kegEngine.FakePour();
-                break;
+            var weatherCallback = (data) => {
+                if (data){
+                    var outData = JSON.parse(data);
+                    var notificationMsg = new WeatherNotificationMessage(outData.error, outData.data);
+                    if (this.messageChannel.SendMessage(notificationMsg)) {
+                        weatherChannel.removeListener('data', weatherCallback);
+                    }
+                }    
+            };
+            
+            this.weatherProcess.on('data', weatherCallback);
         }
     };
 }

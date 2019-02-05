@@ -1,19 +1,21 @@
-const {WeatherNotificationMessage, CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage} = require('./definitions');
+const {CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage, OperationInProgressErrorMessage} = require('./definitions');
 const Configuration = require('./configuration');
+var AsyncLock = require('async-lock');
 
 class KegEngine {
 
-    constructor(messageChannel, solenoid, flowmeter, users, pours)
+    constructor(solenoid, flowmeter, users, pours)
     {
-        this.messageChannel = messageChannel;
         this.solenoid = solenoid;
         this.flowmeter = flowmeter;
         this.users = users;
         this.pours = pours;
         this.userTimer = setTimeout(function(){},0);
+        this.solenoidLock = new AsyncLock();
+        this._solenoidInUse = false;
     }
 
-    Initialize() {
+    Initialize(broadcast) {
         this.users.getDefaultUser((err, defaultUser) => {
             if (!err) {
                 this.currentUser = defaultUser;
@@ -24,54 +26,69 @@ class KegEngine {
         });
 
         this.lastPourUpdateLiters = 0;
+        this.HandlePours(broadcast)
     }
 
-    ///////////////////
-    // WEATHER
-    ///////////////////
-    HandleWeather(weatherChannel) {
-        
-        var weatherCallback = (data) => {
-            if (data){
-                var outData = JSON.parse(data);
-                var notificationMsg = new WeatherNotificationMessage(outData.error, outData.data);
-                if (this.messageChannel.SendMessage(notificationMsg)) {
-                    weatherChannel.removeListener('data', weatherCallback);
-                }
-            }    
-        };
-        
-        weatherChannel.on('data', weatherCallback);
+    _tryLockSolenoid(cb)
+    {
+        this.solenoidLock.acquire("lock", (done) => {
+            if (this._solenoidInUse)
+            {
+                cb(false);
+            }
+            else
+            {
+                this._solenoidInUse = true;
+                cb(true);
+            }
+            done();
+        });
+    };
+
+    _unlockSolenoid(cb)
+    {
+        this.solenoidLock.acquire("lock", (done) => {
+            this._solenoidInUse = false;
+            if (cb) cb();
+            done();
+        });
+    };
+
+    _tryEnterExclusiveOperation(personal, cb)
+    {
+        this._tryLockSolenoid((success) => {
+            if (!success)
+            {
+                personal(new OperationInProgressErrorMessage());
+            }
+            cb(success);
+        });
     };
 
     ///////////////////
     // POURS
     ///////////////////
-    HandlePours() {
+    HandlePours(broadcast) {
 
         var pourCallback = (litersPoured) => {
             if (litersPoured){
                 //reset the user timer because pouring is a sign of activity
                 clearTimeout(this.userTimer);
-                this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+                this.userTimer = setTimeout(() => {this.DefaultUserNotification(broadcast)}, Configuration.USER_TIMEOUT);
 
                 var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured - this.lastPourUpdateLiters, litersPoured, false);
                 this.lastPourUpdateLiters = litersPoured;
-                if (this.messageChannel.SendMessage(notificationMsg)) {
-                    this.flowmeter.removeListener('pourUpdate', pourCallback);
-                }
+                broadcast(notificationMsg);
             }
         };
 
         var calibrationCallback = (litersPerTick) => {
             var calibrationMessage = new CalibrationResponseMessage(litersPerTick);
-            if (this.messageChannel.SendMessage(calibrationMessage)) {
-                this.flowmeter.removeListener('finishedCalibration', calibrationCallback);
-            }
+            broadcast(calibrationMessage);
         }
 
         var finishedPourCallback = (litersPoured) => {
-            if (litersPoured){
+            if (litersPoured && litersPoured > Configuration.CALIBRATION_ML * 4){
                 this.pours.addPour({userId: this.currentUser.id, beerId: "serengeti", amount: litersPoured}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
@@ -79,9 +96,7 @@ class KegEngine {
 
                     var notificationMsg = new PourNotificationMessage(this.currentUser, litersPoured - this.lastPourUpdateLiters, litersPoured, true);
                     this.lastPourUpdateLiters = 0;
-                    if (this.messageChannel.SendMessage(notificationMsg)) {
-                        this.flowmeter.removeListener('finishedPour', finishedPourCallback);
-                    }
+                    broadcast(notificationMsg);
                 });
             }
         };
@@ -93,70 +108,92 @@ class KegEngine {
         this.flowmeter.on('finishedPour', finishedPourCallback);
     };
 
-    GetLastPours(parsedMsg) {
+    GetLastPours(parsedMsg, broadcast, personal) {
         this.pours.getLastPours(parsedMsg.data ? parsedMsg.data.top : 100, (err, pours) => {
             var responseMsg = new GetLastPoursResponseMessage(err, pours);
-            this.messageChannel.SendMessage(responseMsg);
+            personal(responseMsg);
         });
     };
 
-    Calibrate(){
-        this.flowmeter.emit("calibrate");
+    Calibrate(parsedMsg, broadcast, personal){
+        this._tryEnterExclusiveOperation(personal, (success) => {
+            if (success)
+            {
+                this.flowmeter.emit("calibrate");
 
-        this.solenoid.Open((err) => {
-            clearTimeout(this.userTimer);
-            this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.CALIBRATION_TIMEOUT);
+                this.solenoid.Open((err) => {
+                    clearTimeout(this.userTimer);
+                    this.userTimer = setTimeout(() => {this.DefaultUserNotification(null, personal)}, Configuration.CALIBRATION_TIMEOUT);
+                });
+            }
         });
     }
 
-    FakePour(){
-        this.flowmeter.emit("fakePour");
+    FakePour(parsedMsg, broadcast, personal){
+        this.flowmeter.emit("fakePour");     
     };
 
     ///////////////////
     // USERS
     ///////////////////
-    AddUser(parsedMsg) {
+    AddUser(parsedMsg, broadcast, personal) {
         this.users.addUser(new AddUserMessage(parsedMsg), (err, guid) => {
             var responseMsg = new AddUserResponseMessage(err, guid);
-            this.messageChannel.SendMessage(responseMsg);
+            if (err) { 
+                personal(responseMsg); 
+            } else {
+                broadcast(responseMsg);
+            }
         });
     }
 
-    GetUsers(parsedMsg) {
+    GetUsers(parsedMsg, broadcast, personal) {
         this.users.getUsers((err, users) => {
             var responseMsg = new GetUsersResponseMessage(err, users);
-            this.messageChannel.SendMessage(responseMsg);
+            personal(responseMsg);
         });
     }
 
-    SelectUser(parsedMsg) {
+    SelectUser(parsedMsg, broadcast, personal) {
         if (!parsedMsg.data || !parsedMsg.data.id) {
-            this.messageChannel.SendMessage(new SelectUserResponseMessage("Expected data member 'id' is missing from the request", null)); 
+            personal(new SelectUserResponseMessage("Expected data member 'id' is missing from the request", null)); 
         } else {
             this.users.getUser(parsedMsg.data.id, (err, user) => {
                 if (!err) {
-                    this.currentUser = user;
-                    this.solenoid.Open((err) => {
-                        var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
-                        this.messageChannel.SendMessage(responseMsg);
-                        clearTimeout(this.userTimer);
-                        this.userTimer = setTimeout(() => {this.DefaultUserNotification()}, Configuration.USER_TIMEOUT);
+                    this._tryEnterExclusiveOperation(personal, (success) => {
+                        if (success)
+                        {
+                            this.currentUser = user;
+                            this.solenoid.Open((err) => {
+                                var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
+                                personal(responseMsg);
+                                clearTimeout(this.userTimer);
+                                this.userTimer = setTimeout(() => {this.DefaultUserNotification(null, personal)}, Configuration.USER_TIMEOUT);
+                            });
+                        }
                     });
                 } else {
                     var responseMsg = new SelectUserResponseMessage(err, this.currentUser);
-                    this.messageChannel.SendMessage(responseMsg);
+                    personal(responseMsg);
                 }                
             });
         }
     }
 
-    DefaultUserNotification() {
+    DefaultUserNotification(broadcast, personal) {
         this.currentUser = this.defaultUser;
         this.solenoid.Close((err) => {
             clearTimeout(this.userTimer);
             var responseMsg = new CurrentUserNotificationMessage(err, this.currentUser);
-            this.messageChannel.SendMessage(responseMsg);
+            if (broadcast)
+            {
+                broadcast(responseMsg);
+            }
+            else
+            {
+                personal(responseMsg);
+            }
+            this._unlockSolenoid();        
         });
     }
 }

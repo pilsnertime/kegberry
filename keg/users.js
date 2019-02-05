@@ -63,7 +63,13 @@ function Users(db)
 					if(user.length != 1) {
 						console.log("Unexpectedly found "+user.length+" users with id "+userId);
 					}
-					callback(null, user[0]);
+					if(user.length == 0)
+					{
+						callback("Could not find user with id "+userId, null);
+					}
+					else {
+						callback(null, user[0]);
+					}				
 				}
 			});
 		});
