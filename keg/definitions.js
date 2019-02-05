@@ -107,6 +107,14 @@ class BadRequestResponseMessage extends ResponseMessage
     }
 }
 
+class OperationInProgressErrorMessage extends ResponseMessage
+{
+    constructor(message)
+    {
+        super("failedResponse", "Operation is currently used by another client. Please retry in a bit.");
+    }
+}
+
 module.exports = {
     ClientMessage: ClientMessage,
     ResponseMessage: ResponseMessage,
@@ -119,5 +127,6 @@ module.exports = {
     GetLastPoursResponseMessage: GetLastPoursResponseMessage,
     CurrentUserNotificationMessage: CurrentUserNotificationMessage,
     BadRequestResponseMessage: BadRequestResponseMessage,
-    CalibrationResponseMessage: CalibrationResponseMessage
+    CalibrationResponseMessage: CalibrationResponseMessage,
+    OperationInProgressErrorMessage: OperationInProgressErrorMessage
 };

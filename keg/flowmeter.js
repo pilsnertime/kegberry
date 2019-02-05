@@ -14,6 +14,7 @@ function FlowMeter(emitter, pin, litersPerTick, timeBetweenPours, notificationMl
 	this.emitter = emitter;
 
 	this.timer = setTimeout(function(){},0);
+	this.fakePourTimer = setTimeout(function(){},0);
 
 	this.notificationTrack = 0;
 	this.litersPoured = 0;
@@ -21,10 +22,17 @@ function FlowMeter(emitter, pin, litersPerTick, timeBetweenPours, notificationMl
 	this.finishPour = () => {
 		if (!this.calibrate) {
 			this.emitter.emit('finishedPour', this.litersPoured);
-		} else {		
-			this.litersPerTick = this.calibrateMl / 1000 / this.calibrationTickCount;
-			this.calibrate = false;
-			console.log(`Finished calibration. New litersPerTick: ${this.litersPerTick}`)
+		} else {
+			if (this.calibrationTickCount > 0)
+			{
+				this.litersPerTick = this.calibrateMl / 1000 / this.calibrationTickCount;
+				this.calibrate = false;
+				console.log(`Finished calibration. New litersPerTick: ${this.litersPerTick}`)
+			}
+			else
+			{
+				console.log(`Finished calibration with no-op. Keeping litersPerTick: ${this.litersPerTick}`)
+			}
 			this.emitter.emit('finishedCalibration', this.litersPerTick);
 		}		
 		this.fakeTickCount = 0;
@@ -75,21 +83,24 @@ function FlowMeter(emitter, pin, litersPerTick, timeBetweenPours, notificationMl
 			});
 	
 			this.emitter.on('calibrate', (milliliters) => {
-				console.log(`Starting calibration with a ${milliliters} mL pour. Old liters per tick: ${this.litersPerTick}`);
 				this.calibrate = true;
 				if (!milliliters) {
 					this.calibrateMl = Configuration.CALIBRATION_ML;
 				} else {
 					this.calibrateMl = milliliters;				
 				}
+				console.log(`Starting calibration with a ${this.calibrateMl} mL pour. Old liters per tick: ${this.litersPerTick}`);
 				this.calibrationTickCount = 0;
+				clearTimeout(this.timer);
+				this.timer = setTimeout(this.finishPour, Configuration.CALIBRATION_TIMEOUT);
 			});
 
 			this.fakePour = () => {
+				clearTimeout(this.fakePourTimer);
 				this.fakeTickCount++;
 				if (this.fakeTickCount <= 500 + (Math.random()-0.5)*50) {
 					this.gpio.emit('change', "blah");		
-					setTimeout(this.fakePour, 15);
+					this.fakePourTimer = setTimeout(this.fakePour, 15);
 				}
 			}
 
