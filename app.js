@@ -30,7 +30,7 @@ weatherProcess.on('error', (err) => {
 // Bootstrap the flowmeter data provider
 var flowmeter = require('./keg/flowmeter')({
 	pin: 40,
-	litersPerTick: 0.00089711713,
+	litersPerTick: 0.0017686567164179104,
 	timeBetweenPours: Config.TIME_BETWEEN_POURS, 
 	notificationMl: 20
 });
