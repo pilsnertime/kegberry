@@ -110,7 +110,7 @@ describe("API Validation", () => {
                             var response = JSON.parse(msg);
                             Assert.equal(response.messageName, "removeUserResponse");
                             Assert(response.data != undefined);
-                            Assert.equal(response.data.count, 1);
+                            Assert.equal(response.data.id, id);
                             return cb(err); 
                          });                        
                     });
