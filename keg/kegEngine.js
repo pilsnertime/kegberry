@@ -88,7 +88,7 @@ class KegEngine {
         }
 
         var finishedPourCallback = (litersPoured) => {
-            if (litersPoured && litersPoured > Configuration.CALIBRATION_ML * 4){
+            if (litersPoured && litersPoured > this.flowmeter.litersPerTick * 4){
                 this.pours.addPour({userId: this.currentUser.id, beerId: "serengeti", amount: litersPoured}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
