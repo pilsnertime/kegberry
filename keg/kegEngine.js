@@ -159,7 +159,7 @@ class KegEngine {
             personal(new RemoveUserResponseMessage("Expected data member 'id' is missing from the request", null)); 
         } else {
             this.users.removeUser(parsedMsg.data.id, (err, count) => {
-                var responseMsg = new RemoveUserResponseMessage(err, count);
+                var responseMsg = new RemoveUserResponseMessage(err, {"id": parsedMsg.data.id});
                 broadcast(responseMsg);
             });
         }
