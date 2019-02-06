@@ -48,9 +48,7 @@ export class MessagingService {
         this.socket.onopen = (onOpenEvent) => {
             
             this._onConnected.next(undefined);
-            // Send an initial message
-            // socket.send('I am the client and I\'m listening!');
-            
+           
             // Listen for messages
             this.socket.onmessage = (onMessageEvent) => {
                 console.log('Client received a message', onMessageEvent);
