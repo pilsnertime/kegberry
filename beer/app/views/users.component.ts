@@ -28,7 +28,7 @@ export class Users {
         });
 
         this._messagingService.addUserResponseStream.subscribe((user: IAddUserResponse) => {
-            if (user !== undefined && user !== undefined) {
+            if (user !== undefined) {
                 this.users.push(user);
             }
         });
