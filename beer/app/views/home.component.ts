@@ -14,7 +14,10 @@ export class HomeComponent {
 
   constructor(private messageService: MessagingService) {}
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
+    this.messageService.currentUserTimeoutNotification$.subscribe(_ => {
+      this._pouring = false;
+    });
   }
 
   onUserSelected(user: IUser) {

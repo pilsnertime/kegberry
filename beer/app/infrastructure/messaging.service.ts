@@ -26,10 +26,15 @@ export class MessagingService {
     // message streams
     private pourNotification: string = 'pourUpdate';
     private _pourNotification: Subject<IPourNotification> = new Subject<IPourNotification>();
-    public pourNotificationStream: Observable<IPourNotification> = this._pourNotification.asObservable();
+    pourNotificationStream: Observable<IPourNotification> = this._pourNotification.asObservable();
+    
     private temperatureNotification: string = 'weather';
     private _temperatureMessage: Subject<ITemperatureNotification> = new Subject<ITemperatureNotification>();
-    public temperatureMessageStream: Observable<ITemperatureNotification> = this._temperatureMessage.asObservable();
+    temperatureMessageStream: Observable<ITemperatureNotification> = this._temperatureMessage.asObservable();
+    
+    private currentUserTimeoutNotification: string = 'currentUserNotification';
+    private _currentUserTimeoutNotification: Subject<any> = new Subject<any>();
+    currentUserTimeoutNotification$: Observable<any> = this._currentUserTimeoutNotification.asObservable();
 
     private getUsersResponse: string = 'getUsersResponse';
     private _getUsersResponse: BehaviorSubject<IGetUserResponse> = new BehaviorSubject<IGetUserResponse>(undefined);
@@ -75,6 +80,9 @@ export class MessagingService {
             // notifications
             case this.temperatureNotification:
                 this._temperatureMessage.next(message.data);
+            break;
+            case this.currentUserTimeoutNotification:
+                this._currentUserTimeoutNotification.next(undefined);
             break;
             case this.pourNotification:
                 this._pourNotification.next(message.data);
