@@ -38,6 +38,28 @@ function Users(db)
 		}
 	};
 
+	this.removeUser = (userId, callback) => {
+		this.nosql.remove().make( (builder) => {
+			builder.search('id', userId);
+			builder.callback((err, count) => {
+				if (err) {
+					callback(err, null);
+				} else {
+					if(count != 1) {
+						console.log("Unexpectedly found "+count+" users with id "+userId);
+					}
+					if(count == 0)
+					{
+						callback("Could not find user with id "+userId, null);
+					}
+					else {
+						callback(null, {"count": count});
+					}				
+				}
+			});
+		});
+	}
+
 	this.getUsers = (callback) => {
 		this.nosql.find().make( (builder) => {
 			builder.where("id", "!=", this.DEFAULT_USER_ID)

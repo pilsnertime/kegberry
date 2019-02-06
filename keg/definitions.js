@@ -83,6 +83,14 @@ class SelectUserResponseMessage extends ResponseMessage
     }
 }
 
+class RemoveUserResponseMessage extends ResponseMessage
+{
+    constructor(err, count)
+    {
+        super("removeUserResponse", err, count);
+    }
+}
+
 class GetLastPoursResponseMessage extends ResponseMessage
 {
     constructor(err, pours)
@@ -128,5 +136,6 @@ module.exports = {
     CurrentUserNotificationMessage: CurrentUserNotificationMessage,
     BadRequestResponseMessage: BadRequestResponseMessage,
     CalibrationResponseMessage: CalibrationResponseMessage,
-    OperationInProgressErrorMessage: OperationInProgressErrorMessage
+    OperationInProgressErrorMessage: OperationInProgressErrorMessage,
+    RemoveUserResponseMessage: RemoveUserResponseMessage
 };

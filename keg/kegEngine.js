@@ -1,4 +1,4 @@
-const {CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage, OperationInProgressErrorMessage} = require('./definitions');
+const {CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, RemoveUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage, OperationInProgressErrorMessage} = require('./definitions');
 const Configuration = require('./configuration');
 var AsyncLock = require('async-lock');
 
@@ -152,6 +152,17 @@ class KegEngine {
             var responseMsg = new GetUsersResponseMessage(err, users);
             personal(responseMsg);
         });
+    }
+
+    RemoveUser(parsedMsg, broadcast, personal) {
+        if (!parsedMsg.data || !parsedMsg.data.id) {
+            personal(new RemoveUserResponseMessage("Expected data member 'id' is missing from the request", null)); 
+        } else {
+            this.users.removeUser(parsedMsg.data.id, (err, count) => {
+                var responseMsg = new RemoveUserResponseMessage(err, count);
+                broadcast(responseMsg);
+            });
+        }
     }
 
     SelectUser(parsedMsg, broadcast, personal) {
