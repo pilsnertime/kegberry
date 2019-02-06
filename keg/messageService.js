@@ -91,6 +91,10 @@ class MessageService
             case "selectUser":
                 this.kegEngine.SelectUser(parsedMsg, broadcast, personal);
                 break;
+                
+            case "removeUser":
+                this.kegEngine.RemoveUser(parsedMsg, broadcast, personal);
+                break;
 
             case "getLastPours":
                 this.kegEngine.GetLastPours(parsedMsg, broadcast, personal);

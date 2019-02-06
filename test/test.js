@@ -62,8 +62,8 @@ describe("API Validation", () => {
 
     // User API Tests
     describe("User APIs", () => {
-        it("addUser and getUsers test", (done) => {
-            async.series([
+        it("addUser, getUsers and removeUsers test", (done) => {
+            async.waterfall([
                 (cb) => {
                     ws.send(JSON.stringify({'messageName': 'getUsers'}), (err) => {
                         ws.on('message', (msg) => {
@@ -99,6 +99,31 @@ describe("API Validation", () => {
                             Assert(response.data.users != undefined);
                             Assert.equal(response.data.users.length, 1);
                             Assert.equal(response.data.users[0].name, "Steven ZHU");
+                            return cb(err, response.data.users[0].id); 
+                         });                        
+                    });
+                },
+                (id, cb, err) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({"messageName": "removeUser", "data": {"id": id}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "removeUserResponse");
+                            Assert(response.data != undefined);
+                            Assert.equal(response.data.count, 1);
+                            return cb(err); 
+                         });                        
+                    });
+                },
+                (cb) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'getUsers'}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "getUsersResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.users != undefined);
+                            Assert.equal(response.data.users.length, 0);
                             return cb(err); 
                          });                        
                     });
