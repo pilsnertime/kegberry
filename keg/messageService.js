@@ -115,27 +115,22 @@ class MessageService
 
     _weatherBroadcasts() {
         if (Configuration.IS_TEST_HOST)
-        {
+        {            
             var fakeWeatherCallback = () => {
-                this.Brooadcast(new WeatherNotificationMessage(null, {"temperature": (Math.random()+7), "humidity": (Math.random()+50)}));
+                this.weatherProcess.emit('data', JSON.stringify({"data":{"temperature": (Math.random()+7), "humidity": (Math.random()+50)}}));
                 setTimeout(fakeWeatherCallback, Configuration.TEMP_POLLING_SEC * 1000);
             }
             fakeWeatherCallback();
         }
-        else
-        {
-            var weatherCallback = (data) => {
-                if (data){
-                    var outData = JSON.parse(data);
-                    var notificationMsg = new WeatherNotificationMessage(outData.error, outData.data);
-                    if (this.messageChannel.SendMessage(notificationMsg)) {
-                        weatherChannel.removeListener('data', weatherCallback);
-                    }
-                }    
-            };
-            
-            this.weatherProcess.on('data', weatherCallback);
-        }
+
+        var weatherCallback = (data) => {
+            if (data){
+                var outData = JSON.parse(data);
+                this.Brooadcast(new WeatherNotificationMessage(outData.error, outData.data));
+            }    
+        };
+        
+        this.weatherProcess.on('data', weatherCallback);
     };
 }
 
