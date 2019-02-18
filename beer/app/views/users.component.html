@@ -9,7 +9,8 @@
     <div class="user-container">
         <div class="user-icon-selected"
              (click)="this._addUserDialogActive = true">
-            +
+             <img class="user-icon"
+                  [src]="'app/assets/add_user.png'">
         </div>
     </div>
     <div class="user-container" *ngFor="let user of users; let i = index">
