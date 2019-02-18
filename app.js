@@ -24,7 +24,15 @@ var spawn = require('child_process').spawn,
     weatherProcess = spawn('python', [Config.TEMP_POLLING_SCRIPT_LOCATION, Config.TEMP_POLLING_SEC]);
 
 weatherProcess.on('error', (err) => {
-  console.log("Couldn't spawn temperature polling. Make sure python is installed.")
+  console.log(`Couldn't spawn temperature polling. Make sure python is installed. Error: ${err}`);
+});
+
+weatherProcess.stderr.on('data', (error) => {
+    console.log(`[Ignore if not on raspberry Pi] Weather process returned an error: ${error}`);
+});
+
+weatherProcess.on('close', (code) => {
+    console.log(`Weather process exited with code ${code}`);
 });
 
 // Bootstrap the flowmeter data provider
