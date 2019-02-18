@@ -5,10 +5,10 @@ const {BadRequestResponseMessage, WeatherNotificationMessage} = require('./defin
 
 class MessageService
 {
-    constructor(wss, weatherProcess, flowmeter, solenoid, users, pours)
+    constructor(wss, weatherProcessStdout, flowmeter, solenoid, users, pours)
     {
         this.wss = wss;
-        this.weatherProcess = weatherProcess;
+        this.weatherProcessStdout = weatherProcessStdout;
         this.flowmeter = flowmeter;
         this.solenoid = solenoid;
         this.users = users;
@@ -117,7 +117,7 @@ class MessageService
         if (Configuration.IS_TEST_HOST)
         {            
             var fakeWeatherCallback = () => {
-                this.weatherProcess.emit('data', JSON.stringify({"data":{"temperature": (Math.random()+7), "humidity": (Math.random()+50)}}));
+                this.weatherProcessStdout.emit('data', JSON.stringify({"data":{"temperature": (Math.random()+7), "humidity": (Math.random()+50)}}));
                 setTimeout(fakeWeatherCallback, Configuration.TEMP_POLLING_SEC * 1000);
             }
             fakeWeatherCallback();
@@ -130,13 +130,13 @@ class MessageService
             }    
         };
         
-        this.weatherProcess.on('data', weatherCallback);
+        this.weatherProcessStdout.on('data', weatherCallback);
     };
 }
 
-function ExposeMessageService(wss, weatherProcess, flowmeter, solenoid, users, pours)
+function ExposeMessageService(wss, weatherProcessStdout, flowmeter, solenoid, users, pours)
 {
-    return new MessageService(wss, weatherProcess, flowmeter, solenoid, users, pours);
+    return new MessageService(wss, weatherProcessStdout, flowmeter, solenoid, users, pours);
 }
 
 module.exports = ExposeMessageService;

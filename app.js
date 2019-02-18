@@ -24,7 +24,11 @@ var spawn = require('child_process').spawn,
     weatherProcess = spawn('python', [Config.TEMP_POLLING_SCRIPT_LOCATION, Config.TEMP_POLLING_SEC]);
 
 weatherProcess.on('error', (err) => {
-  console.log("Couldn't spawn temperature polling. Make sure python is installed.")
+  console.log(`Couldn't spawn temperature polling. Make sure python is installed. Error: ${err}`);
+});
+
+weatherProcess.on('close', (code) => {
+    console.log(`Weather process exited with code ${code}`);
 });
 
 // Bootstrap the flowmeter data provider
@@ -47,7 +51,7 @@ var pourData = require('./keg/pours.js')(Config.POURS_DB_FILE);
 var kegData = require('./keg/pours.js')(Config.KEG_DB_FILE);
 
 // Spin up the messaging service
-var messageService = require('./keg/messageService.js')(wss, weatherProcess, flowmeter, solenoid, userData, pourData, kegData);
+var messageService = require('./keg/messageService.js')(wss, weatherProcess.stdout, flowmeter, solenoid, userData, pourData, kegData);
 messageService.Start();
 
 // Once we've gone through the whole spin-up workflow without throwing,
