@@ -40,7 +40,10 @@ describe("API Validation", () => {
                 test_server.stdout.on("data", (msg) => {
                     if (String(msg).includes("ready to serve")) {
                         return cb();
-                    }
+                    }              
+                });
+                test_server.stderr.on("data", (msg) => {
+                    console.log(String(msg));
                 });
             },
             (cb) => {
@@ -194,13 +197,171 @@ describe("API Validation", () => {
     
     // Pour API Tests
     describe("Pour APIs", () => {
-        it("addUser and getUsers test", (done) => {
-            async.series([
+        it("Pour test and getLastPours", (done) => {
+            async.waterfall([
+                (cb) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'addUser', 'data': {'name': 'Tom Misch'}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "addUserResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.id != undefined);
+                            Assert.equal(response.data.name, "Tom Misch");
+                            return cb(err, [response.data.id]);
+                         });                        
+                    });                    
+                },
+                (ids, cb, err) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'addUser', 'data': {'name': 'Steven ZHU'}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "addUserResponse");
+                            Assert(response.data != undefined);
+                            Assert(response.data.id != undefined);
+                            Assert.equal(response.data.name, "Steven ZHU");
+                            ids.push(response.data.id)
+                            return cb(err, ids);
+                         });                        
+                    });                    
+                },
+                (ids, cb, err) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'selectUser', 'data': {'id': ids[1]}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "selectUserResponse");
+                            Assert(response.data != undefined);
+                            Assert.equal(response.data.name, "Steven ZHU");
+                            return cb(err, ids); 
+                         });                        
+                    });
+                },
+                (ids, cb, err) => {
+                    // Validate pourNotifications
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'fakePour'}), (err) => {
+                        var incrementalNotification = false;
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            if (response.messageName != "weatherNotification")
+                            {
+                                Assert.equal(response.messageName, "pourUpdate");
+                                Assert(response.data != undefined);
+                                Assert(response.data.currentUser != undefined);
+                                Assert.equal(response.data.currentUser.name, "Steven ZHU");
+                                if (response.data.isFinished)
+                                {
+                                    Assert(incrementalNotification);
+                                    Assert(response.data.totalPour > 0.3 && response.data.totalPour < 0.6);
+                                    return cb(null, ids); 
+                                }
+                                else
+                                {
+                                    Assert(response.data.incrementalPour > 0 && response.data.incrementalPour < 0.1);
+                                    incrementalNotification = true;
+                                }
+                            }
+                         });  
+                    });
+                },
+                (ids, cb, err) => {
+                    // Validate currentUser notification about a timeout
+                    ws.removeAllListeners("message");
+                    ws.on('message', (msg) => {
+                        var response = JSON.parse(msg);
+                        Assert.equal(response.messageName, "currentUserNotification");
+                        Assert(response.data != undefined);
+                        Assert.equal(response.data.id, "default_user");
+                        return cb(null, ids); 
+                     });  
+                },
+                (ids, cb, err) => {
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'selectUser', 'data': {'id': ids[0]}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "selectUserResponse");
+                            Assert(response.data != undefined);
+                            Assert.equal(response.data.name, "Tom Misch");
+                            return cb(err, ids); 
+                         });                        
+                    }); 
+                },
+                (ids, cb, err) => {
+                    // Validate pourNotifications
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'fakePour'}), (err) => {
+                        var incrementalNotification = false;
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            if (response.messageName != "weatherNotification")
+                            {
+                                Assert.equal(response.messageName, "pourUpdate");
+                                Assert(response.data != undefined);
+                                Assert(response.data.currentUser != undefined);
+                                Assert.equal(response.data.currentUser.name, "Tom Misch");
+                                Assert(response.data.incrementalPour > 0 && response.data.incrementalPour < 0.1);
+                                if (response.data.isFinished)
+                                {
+                                    Assert(incrementalNotification);
+                                    Assert(response.data.totalPour > 0.3 && response.data.totalPour < 0.6);
+                                    return cb(null, ids); 
+                                }
+                                else
+                                {
+                                    incrementalNotification = true;
+                                }
+                            }
+                         });  
+                    });
+                },
+                (ids, cb, err) => {
+                    // Validate currentUser notification about a timeout
+                    ws.removeAllListeners("message");
+                    ws.on('message', (msg) => {
+                        var response = JSON.parse(msg);
+                        Assert.equal(response.messageName, "currentUserNotification");
+                        Assert(response.data != undefined);
+                        Assert.equal(response.data.id, "default_user");
+                        return cb(null, ids); 
+                     });  
+                },
+                (ids, cb, err) => {
+                    // Validate getLastPours with a top
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'getLastPours', 'data': {'top': 1}}), (err) => {
+                        ws.on('message', (msg) => {
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "getLastPoursResponse");
+                            Assert(response.data != undefined && response.data.pours != undefined);
+                            Assert.equal(response.data.pours.length, 1);
+                            Assert.equal(response.data.pours[0].userName, "Tom Misch");
+                            return cb(err, ids);
+                         });                        
+                    });
+                },
+                (ids, cb, err) => {
+                    // Validate getLastPours
+                    ws.removeAllListeners("message");
+                    ws.send(JSON.stringify({'messageName': 'getLastPours'}), (err) => {
+                        ws.on('message', (msg) => {
+                            console.log(msg);
+                            var response = JSON.parse(msg);
+                            Assert.equal(response.messageName, "getLastPoursResponse");
+                            Assert(response.data != undefined && response.data.pours != undefined);
+                            Assert.equal(response.data.pours.length, 2);
+                            Assert.equal(response.data.pours[1].userName, "Steven ZHU");
+                            return cb(err, ids);
+                         });                        
+                    });
+                },
                 (cb) => {
                     done();
                 }
             ]);
-        });
+        }).timeout(20000);
     });
 });
 

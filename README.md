@@ -163,13 +163,13 @@ name | <<i>string</i>> Display name.
 	 - [x] Docs
 	 - [x] Tests
 - [ ] Calibrate API
-	 - [ ] Implementation
+	 - [X] Implementation
 	 - [ ] Docs
 	 - [ ] Tests
 - [ ] Fake Pour API
-	 - [ ] Implementation
+	 - [X] Implementation
 	 - [ ] Docs
-	 - [ ] Tests
+	 - [X] Tests
 - [ ] Weather API
 	 - [X] Implementation
 	 - [ ] Docs
@@ -177,7 +177,7 @@ name | <<i>string</i>> Display name.
 - [ ] Pour Notification API
 	 - [X] Implementation
 	 - [ ] Docs
-	 - [ ] Tests
+	 - [X] Tests
 - [ ] Keg Info API
 	 - [ ] Implementation
 	 - [ ] Docs

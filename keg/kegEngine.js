@@ -88,7 +88,7 @@ class KegEngine {
         }
 
         var finishedPourCallback = (litersPoured) => {
-            if (litersPoured && litersPoured > this.flowmeter.litersPerTick * 4){
+            if (litersPoured && litersPoured > 0.02){
                 this.pours.addPour({userId: this.currentUser.id, beerId: "serengeti", amount: litersPoured}, (err, res) => {
                     if (err || !res) {
                         console.log("Failed to preserve pour. Error: " + err);
@@ -110,8 +110,31 @@ class KegEngine {
 
     GetLastPours(parsedMsg, broadcast, personal) {
         this.pours.getLastPours(parsedMsg.data ? parsedMsg.data.top : 100, (err, pours) => {
-            var responseMsg = new GetLastPoursResponseMessage(err, pours);
-            personal(responseMsg);
+            var respond = () => {
+                personal(new GetLastPoursResponseMessage(err, pours));
+            };
+            if (err || pours.length == 0)
+            {
+                return respond();
+            }
+
+            var fetchUserName = (index) => {
+                this.users.getUser(pours[index].userId, (err, user) => {
+                    if (err)
+                    {
+                        return personal(new GetLastPoursResponseMessage("Unexpected error occurred while populating the userName for pours" + err, null));
+                    }
+                    pours[index].userName = user.name;
+                    if (index < pours.length - 1) {
+                        fetchUserName(index + 1);
+                    }
+                    else
+                    {
+                        return respond();
+                    }                    
+                });
+            };
+            fetchUserName(0);
         });
     };
 
