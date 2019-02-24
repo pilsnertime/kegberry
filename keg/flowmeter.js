@@ -98,7 +98,7 @@ function FlowMeter(emitter, pin, litersPerTick, timeBetweenPours, notificationMl
 			this.fakePour = () => {
 				clearTimeout(this.fakePourTimer);
 				this.fakeTickCount++;
-				if (this.fakeTickCount <= 500 + (Math.random()-0.5)*50) {
+				if (this.fakeTickCount <= 0.5/this.litersPerTick + (Math.random()-0.5)*0.05/this.litersPerTick) {
 					this.gpio.emit('change', "blah");		
 					this.fakePourTimer = setTimeout(this.fakePour, 15);
 				}
