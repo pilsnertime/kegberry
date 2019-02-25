@@ -100,6 +100,10 @@ class MessageService
                 this.kegEngine.GetLastPours(parsedMsg, broadcast, personal);
                 break;
 
+            case "getTopPourers":
+                this.kegEngine.GetTopPourers(parsedMsg, broadcast, personal);
+                break;
+
             case "calibrate":
                 this.kegEngine.Calibrate(parsedMsg, broadcast, personal);
                 break;

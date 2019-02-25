@@ -59,6 +59,39 @@ function Pours(db)
 			});
 		}
 	};
+
+	this.getSessionTopPourers = (durationInHours, callback) => {
+		if (durationInHours == undefined || durationInHours < 0) {
+			callback("Specify a number greater than zero for session duration in hours.", null);
+		} else {
+			this.nosql.find().make( (builder) => {
+				builder.sort('timestamp', true);
+				builder.filter((pour) => pour.timestamp > Date.now() - durationInHours*60*60*1000);
+				builder.callback( (err, response) => {
+					if (err) {
+						callback(err, null);
+					} else {
+						var map = new Map();
+						response.forEach((pour) => {
+							if (map.has(pour.userId))
+							{
+								map.set(pour.userId, map.get(pour.userId) + pour.amount);
+							}
+							else
+							{
+								map.set(pour.userId, pour.amount);
+							}
+						});
+						var result = [];
+						[...map].sort((a, b) => {return b[1] - a[1];}).forEach((count) => {
+						  result.push({userId: count[0], amount: count[1]});
+						});
+						callback(null, result);
+					}
+				});
+			});
+		}
+	};
 }
 
 function ExposePours(db) {

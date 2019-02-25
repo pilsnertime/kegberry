@@ -1,4 +1,4 @@
-const {CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, RemoveUserResponseMessage, GetLastPoursResponseMessage, CurrentUserNotificationMessage, OperationInProgressErrorMessage} = require('./definitions');
+const {CalibrationResponseMessage, PourNotificationMessage, AddUserMessage, AddUserResponseMessage, GetUsersResponseMessage, SelectUserResponseMessage, RemoveUserResponseMessage, GetLastPoursResponseMessage, GetTopPourersResponseMessage, CurrentUserNotificationMessage, OperationInProgressErrorMessage} = require('./definitions');
 const Configuration = require('./configuration');
 var AsyncLock = require('async-lock');
 
@@ -108,6 +108,26 @@ class KegEngine {
         this.flowmeter.on('finishedPour', finishedPourCallback);
     };
 
+    _populateUserNames(pourArray, cb) {
+        var fetchUserName = (index) => {
+            this.users.getUser(pourArray[index].userId, (err, user) => {
+                if (err)
+                {
+                    return cb("Unexpected error occurred while populating the userName for pours" + err);
+                }
+                pourArray[index].userName = user.name;
+                if (index < pourArray.length - 1) {
+                    fetchUserName(index + 1);
+                }
+                else
+                {
+                    return cb(null);
+                }                    
+            });
+        };
+        fetchUserName(0);
+    };
+
     GetLastPours(parsedMsg, broadcast, personal) {
         this.pours.getLastPours(parsedMsg.data ? parsedMsg.data.top : 100, (err, pours) => {
             var respond = () => {
@@ -117,24 +137,39 @@ class KegEngine {
             {
                 return respond();
             }
+            this._populateUserNames(pours, (error) => {
+                if (error)
+                {
+                    return personal(new GetLastPoursResponseMessage(error, null));
+                }
+                else
+                {
+                    return respond();
+                }
+            });
+        });
+    };
 
-            var fetchUserName = (index) => {
-                this.users.getUser(pours[index].userId, (err, user) => {
-                    if (err)
-                    {
-                        return personal(new GetLastPoursResponseMessage("Unexpected error occurred while populating the userName for pours" + err, null));
-                    }
-                    pours[index].userName = user.name;
-                    if (index < pours.length - 1) {
-                        fetchUserName(index + 1);
-                    }
-                    else
-                    {
-                        return respond();
-                    }                    
-                });
+    GetTopPourers(parsedMsg, broadcast, personal) {
+        this.pours.getSessionTopPourers(parsedMsg.data ? parsedMsg.data.lastHours : 12, (err, pourers) => {
+            var respond = () => {
+                personal(new GetTopPourersResponseMessage(err, pourers));
             };
-            fetchUserName(0);
+            if (err || pourers.length == 0)
+            {
+                return respond();
+            }
+
+            this._populateUserNames(pourers, (error) => {
+                if (error)
+                {
+                    return personal(new GetTopPourersResponseMessage(error, null));
+                }
+                else
+                {
+                    return respond();
+                }
+            });
         });
     };
 
