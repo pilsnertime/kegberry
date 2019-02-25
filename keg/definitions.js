@@ -99,6 +99,14 @@ class GetLastPoursResponseMessage extends ResponseMessage
     }
 }
 
+class GetTopPourersResponseMessage extends ResponseMessage
+{
+    constructor(err, pourers)
+    {
+        super("getTopPourersResponse", err, {pourers: pourers});
+    }
+}
+
 class CurrentUserNotificationMessage extends ResponseMessage
 {
     constructor(err, user)
@@ -133,6 +141,7 @@ module.exports = {
     GetUsersResponseMessage: GetUsersResponseMessage,
     SelectUserResponseMessage: SelectUserResponseMessage,
     GetLastPoursResponseMessage: GetLastPoursResponseMessage,
+    GetTopPourersResponseMessage: GetTopPourersResponseMessage,
     CurrentUserNotificationMessage: CurrentUserNotificationMessage,
     BadRequestResponseMessage: BadRequestResponseMessage,
     CalibrationResponseMessage: CalibrationResponseMessage,
