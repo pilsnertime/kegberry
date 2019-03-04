@@ -7,7 +7,15 @@
 </add-user-dialog>
 <div class="users-container">
     <div class="user-container">
-        <div class="user-icon-selected"
+        <a routerLink="/stats" routerLinkActive="active">
+            <div class="user-icon">
+                    <img class="user-icon"
+                        [src]="'app/assets/stats.png'">
+            </div>
+        </a>
+    </div>
+    <div class="user-container">
+        <div class="user-icon"
              (click)="this._addUserDialogActive = true">
              <img class="user-icon"
                   [src]="'app/assets/add_user.png'">

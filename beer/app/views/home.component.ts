@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Weather } from './weather.component';
 
 @Component({
-  selector: 'my-app',
+  selector: 'home',
   templateUrl: './app/views/home.component.html',
   styleUrls: ['./app/views/home.component.css']
 })

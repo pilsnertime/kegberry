@@ -28,7 +28,7 @@ export class MessagingService {
     private _pourNotification: Subject<IPourNotification> = new Subject<IPourNotification>();
     pourNotificationStream: Observable<IPourNotification> = this._pourNotification.asObservable();
     
-    private temperatureNotification: string = 'weather';
+    private temperatureNotification: string = 'weatherNotification';
     private _temperatureMessage: Subject<ITemperatureNotification> = new Subject<ITemperatureNotification>();
     temperatureMessageStream: Observable<ITemperatureNotification> = this._temperatureMessage.asObservable();
     

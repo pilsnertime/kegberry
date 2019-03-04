@@ -21,7 +21,7 @@ export class Pour {
         this._messageService.pourNotificationStream.subscribe((data: IPourNotification) => {
             if (data !== undefined)
             {
-                this.progress = (data.totalPour*1000)/5;
+                this.progress = (data.totalPour*1200)/5;
                 console.log('totalpour' + data.totalPour);
                 console.log(this.progress);
                 this.currentUserName = data.currentUser.name;
