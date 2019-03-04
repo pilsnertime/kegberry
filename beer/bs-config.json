@@ -1,5 +1,6 @@
 {
     "port": 80,
     "browser": ["chrome"],
-    "ghostMode": false
+    "ghostMode": false,
+    "logLevel": "silent"
 }

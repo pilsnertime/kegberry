@@ -11,4 +11,6 @@ h2, h3 {
 }
 body {
   margin: 2em;
+  background-color: #212121;
+  color: white;
 }
