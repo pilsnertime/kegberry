@@ -1,5 +1,3 @@
-<!-- <input (keyup)="onKey($event)">
-<button (click)="addUser()">Add User</button> -->
 <add-user-dialog
     *ngIf="this._addUserDialogActive"
     (commit)="onAddUserCommit($event)"
@@ -7,7 +5,7 @@
 </add-user-dialog>
 <div class="users-container">
     <div class="user-container">
-        <a routerLink="/stats" routerLinkActive="active">
+        <a routerLink="/leaderboard" routerLinkActive="active">
             <div class="user-icon">
                     <img class="user-icon"
                         [src]="'app/assets/stats.png'">

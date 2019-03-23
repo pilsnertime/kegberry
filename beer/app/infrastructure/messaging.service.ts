@@ -8,7 +8,7 @@ import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
 
 @Injectable()
 export class MessagingService {
-    private _url = 'ws://kegberry:8080';
+    private _url = 'ws://localhost:8080';
     private socket: WebSocket;
 
     private _onConnected: Subject<any> = new Subject<any>();
@@ -22,6 +22,7 @@ export class MessagingService {
     public GetUsers: string = 'getUsers';
     public AddUser: string = 'addUser';
     public SelectUser: string = 'selectUser';
+    public GetLeaderboard: string = 'getTopPourers';
 
     // message streams
     private pourNotification: string = 'pourUpdate';
@@ -39,9 +40,14 @@ export class MessagingService {
     private getUsersResponse: string = 'getUsersResponse';
     private _getUsersResponse: BehaviorSubject<IGetUserResponse> = new BehaviorSubject<IGetUserResponse>(undefined);
     public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable().filter(res => !!res);
+
     private addUserResponse: string = 'addUserResponse';
     private _addUserResponseStream: Subject<IAddUserResponse> = new Subject<IAddUserResponse>();
     public addUserResponseStream: Observable<IAddUserResponse> = this._addUserResponseStream.asObservable();
+
+    private getLeaderboardResponse: string = 'getTopPourersResponse';
+    private _getLeaderboardResponseStream: Subject<IGetLeaderboardResponse> = new Subject<IGetLeaderboardResponse>();
+    public getLeaderboardResponseStream: Observable<IGetLeaderboardResponse> = this._getLeaderboardResponseStream.asObservable();
 
     constructor() {
         this.connectToSocket();
@@ -95,13 +101,17 @@ export class MessagingService {
             case this.addUserResponse:
                 this._addUserResponseStream.next(message.data);
             break;
+            case this.getLeaderboardResponse:
+                this._getLeaderboardResponseStream.next(message.data);
+            break;
             default:
                 console.log('Message notification not supported: ' + message.messageName);
             break;
         }
     }
 
-    sendMessage(msg: IMessage) {
+    sendMessage(messageName: string, data: any) {
+        let msg = {messageName, data};
         console.log(msg);
         this.socket.send(JSON.stringify(msg));
     }
@@ -121,8 +131,12 @@ export interface IAddUserMessageData {
     name: string;
 }
 
-export interface IAddUserMessage{
+export interface IAddUserMessage {
     name: string;
+}
+
+export interface IGetLeaderboard {
+    lastHours: number;
 }
 
 export interface IGetUserResponse {
@@ -130,6 +144,16 @@ export interface IGetUserResponse {
 }
 
 export interface IAddUserResponse extends IUser {
+}
+
+export interface IGetLeaderboardResponse {
+    pourers: IPourer[];
+}
+
+export interface IPourer {
+    userId: string;
+    amount: number;
+    userName: string;
 }
 
 export interface ISelectUserData {

@@ -1,0 +1,71 @@
+.leaderboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 3em;
+
+}
+
+.leaderboard-title {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    font-family: Raleway;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.leaderboard-user-banner-container {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 1em;
+    height: 6em;
+    width: 100%;
+}
+
+.leaderboard-user-banner {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+}
+
+.crown {
+    height: 3em;
+    width: 3em;
+    padding: 0.5em;
+    box-sizing: border-box;
+    background: rgb(255, 185, 0);
+}
+
+.user-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 3em;
+    width: 100%;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+.name {
+    font-family: Raleway;
+    font-weight: bold;
+    color: #333;
+}
+
+.score {
+    font-family: Raleway;
+    color: #777;
+}
+
+.score-bar {
+    width: 100%;
+    border: solid rgb(255, 185, 0);
+    box-sizing: border-box;
+    border-radius: 20em;
+}

@@ -12,11 +12,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StatisticsComponent } from './views/statistics.component';
 import { AddUserDialogComponent } from './views/add-user-dialog.component';
 import { Pouring } from './views/pouring.component';
+import { LeaderboardComponent } from './views/leaderboard.component';
 
 const appRoutes: Routes = [
   {
-    path: 'stats',
-    component: StatisticsComponent
+    path: 'leaderboard',
+    component: LeaderboardComponent
   },
   {
     path: '**',
@@ -43,10 +44,11 @@ const appRoutes: Routes = [
     Pour,
     StatisticsComponent,
     AddUserDialogComponent,
-    Pouring 
+    Pouring,
+    LeaderboardComponent
   ],
   bootstrap:    [ RouterComponent ],
-  providers: [MessagingService]
+  providers: [ MessagingService ]
 })
 
 export class AppModule { }
