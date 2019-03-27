@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { MessagingService, ITemperatureNotification, IUser } from './../infrastructure/messaging.service';
 import { Observable } from 'rxjs/Observable';
-import { Weather } from './weather.component';
 
 @Component({
   selector: 'home',

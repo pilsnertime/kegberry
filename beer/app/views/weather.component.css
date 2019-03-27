@@ -1,15 +1,18 @@
-.weather-container {
-    background: white;
-    display: flex;
-    flex-direction: column;
+.temperature-container {
+    z-index: 99 !important; 
+    position: relative;
+  }
+
+.temperature-text {
+    color: black;
+    position: relative;
+    margin-top: -30;
+    margin-left: 35;
+    font-weight: bold;
+    font-family: Roboto;
 }
 
-.weather-container .temperature {
-    font-size: 2em;
-    color: #777777;
-}
-
-.weather-container .humidity {
-    font-size: 2em;
-    color: #777777;
+.temp-icon {
+    height: 40px;
+    width: 15%
 }

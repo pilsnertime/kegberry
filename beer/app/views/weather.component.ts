@@ -8,21 +8,21 @@ import { Component, Injectable } from '@angular/core';
 })
 
 export class Weather {
-  private _temperature: number;
+  private _temperature: string;
   private _humidity: number;
 
   constructor(@Injectable() private _messageService: MessagingService) {
     _messageService.temperatureMessageStream.subscribe( (msg: ITemperatureNotification) => {
-      this.temperature = msg.temperature;
+      this.temperature = `${msg.temperature.toFixed(1)}ºC`;
       this.humidity = msg.humidity;
     });
   }
 
-  get temperature(): number {
+  get temperature(): string {
     return this._temperature;
   }
 
-  set temperature(temperature: number) {
+  set temperature(temperature: string) {
     this._temperature = temperature;
   }
 

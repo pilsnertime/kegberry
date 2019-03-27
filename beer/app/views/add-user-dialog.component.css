@@ -14,7 +14,7 @@
 }
 
 .username-label {
-    font-family: Raleway;
+    font-family: Roboto;
     font-size: 3em;
     font-weight: bold;
     outline: none;
@@ -22,7 +22,7 @@
 }
 
 input[type=username] {
-    font-family: Raleway;
+    font-family: Roboto;
     font-size: 3em;
     font-weight: bold;
     border: none;
@@ -45,7 +45,7 @@ input[type=username] {
     font-size: 1em;
     margin-left: 1em;
     margin-right: 1em;
-    font-family: Raleway;
+    font-family: Roboto;
     font-weight: bold;
 }
 
@@ -58,6 +58,6 @@ input[type=username] {
     color: white;
     font-size: 1em;
     margin-left: 1em;
-    font-family: Raleway;
+    font-family: Roboto;
     font-weight: bold;
 }
