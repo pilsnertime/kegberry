@@ -9,14 +9,14 @@ import { HttpModule, JsonpModule } from '@angular/http';
 import { HomeComponent }   from './views/home.component';
 import { RouterComponent }   from './views/router.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BreweryMixerComponent } from './views/brewery-mixer.component';
+import { StatisticsComponent } from './views/statistics.component';
 import { AddUserDialogComponent } from './views/add-user-dialog.component';
 import { Pouring } from './views/pouring.component';
 
 const appRoutes: Routes = [
   {
     path: 'stats',
-    component: BreweryMixerComponent
+    component: StatisticsComponent
   },
   {
     path: '**',
@@ -41,7 +41,7 @@ const appRoutes: Routes = [
     Weather,
     Users,
     Pour,
-    BreweryMixerComponent,
+    StatisticsComponent,
     AddUserDialogComponent,
     Pouring 
   ],

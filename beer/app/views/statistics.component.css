@@ -2,6 +2,49 @@
   background: #eeeeee;
 }
 
+.leaderboard {
+  position: absolute;
+  left: 20%;
+  margin-left: 100px;
+  top: 0;
+}
+
+.vl {
+  border-left: 2px solid white;
+  height: 500px;
+  position: absolute;
+  left: 25%;
+  margin-left: -3px;
+  top: 0;
+}
+
+.user-icon {
+  margin: 5px;
+  flex: 1 0 auto;
+  border-radius: 50%;
+  width: 9em;
+  height: 9em;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 9em;
+}
+
+.user-icon-selected {
+  opacity: 0.2;
+  margin: 5px;
+  flex: 1 0 auto;
+  border-radius: 50%;
+  width: 9em;
+  height: 9em;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 9em;
+}
+
+.user-icon:hover {
+  opacity: 0.6;
+}
+
 .wave-svg {
   height: 0px;
   width: 0px;
