@@ -1,3 +1,4 @@
+cd /home/pi/kegberry
 sudo killall node
 sudo git pull
 sudo npm install
