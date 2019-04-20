@@ -14,7 +14,6 @@ interface IPourWithPXWidth extends IPourer {
 export class LeaderboardComponent {
     private _leaderboardUsersStream = new ReplaySubject<IPourer[]>(1);
     private _maxScoreStream = 1000;
-    // private _colors = ['#fd971f', '#ae81ff', '#f92672', '#a6e22e', '#66d9ef'];
     private _colors = [
         '#E74856',
         '#0078D7',
@@ -62,6 +61,7 @@ export class LeaderboardComponent {
         '#107C10',
         '#7E735F'
     ];
+
     private _topThreeColors = ['#ffb900', '#d3d3d3', '#cd7f32'];
 
     leaderboardUserStreamWithPixelWidth;

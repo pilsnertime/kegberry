@@ -16,8 +16,8 @@ import { LeaderboardComponent } from './views/leaderboard.component';
 
 const appRoutes: Routes = [
   {
-    path: 'leaderboard',
-    component: LeaderboardComponent
+    path: 'stats',
+    component: StatisticsComponent
   },
   {
     path: '**',
