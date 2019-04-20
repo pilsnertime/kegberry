@@ -3,8 +3,10 @@
     <div class="leaderboard-user-banner-container"
         *ngFor="let leaderboardUser of leaderboardUserStreamWithPixelWidth | async; let i = index">
         <div class="leaderboard-user-banner">
-            <div class="crown"
-                *ngIf="i < 3">
+            <div
+                *ngIf="i < 3" 
+                class="crown"
+                [ngStyle]="{'background': getTopThreeColor(i)}">
                 <svg
                     fill="#fff"
                     xmlns="http://www.w3.org/2000/svg"
@@ -17,10 +19,11 @@
             </div>
             <div class="user-content">
                 <div class="name">{{i + 1 + '. ' + leaderboardUser.userName}}</div>
-                <div class="score">{{leaderboardUser.amount.toFixed(2)}}</div>
+                <div class="score">{{leaderboardUser.amount.toFixed(2) + ' lts'}}</div>
             </div>
         </div>
         <div class="score-bar"
+            [ngStyle]="{'border': 'solid ' + getColor(i)}"
             [style.width.%]="leaderboardUser.width">
         </div>
     </div>

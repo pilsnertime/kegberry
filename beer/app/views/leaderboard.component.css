@@ -11,7 +11,7 @@
 .leaderboard-title {
     font-size: 2em;
     font-weight: bold;
-    color: #333;
+    color: #eee;
     font-family: Raleway;
     margin-top: 1em;
     margin-bottom: 1em;
@@ -39,7 +39,6 @@
     width: 3em;
     padding: 0.5em;
     box-sizing: border-box;
-    background: rgb(255, 185, 0);
 }
 
 .user-content {
@@ -55,17 +54,16 @@
 .name {
     font-family: Raleway;
     font-weight: bold;
-    color: #333;
+    color: #eee;
 }
 
 .score {
     font-family: Raleway;
-    color: #777;
+    color: white;
 }
 
 .score-bar {
     width: 100%;
-    border: solid rgb(255, 185, 0);
     box-sizing: border-box;
     border-radius: 20em;
 }

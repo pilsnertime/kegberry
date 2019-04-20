@@ -5,3 +5,5 @@ machine learning for drinking behavior
 button in the kegberry ux to make someone drink
 
 make a graph of people who had drank together on the same session
+
+me like ideas
