@@ -13,6 +13,7 @@ import { StatisticsComponent } from './views/statistics.component';
 import { AddUserDialogComponent } from './views/add-user-dialog.component';
 import { Pouring } from './views/pouring.component';
 import { LeaderboardComponent } from './views/leaderboard.component';
+import { BreweryMixer } from './views/brewery-mixer.component';
 
 const appRoutes: Routes = [
   {
@@ -45,7 +46,8 @@ const appRoutes: Routes = [
     StatisticsComponent,
     AddUserDialogComponent,
     Pouring,
-    LeaderboardComponent
+    LeaderboardComponent,
+    BreweryMixer
   ],
   bootstrap:    [ RouterComponent ],
   providers: [ MessagingService ]

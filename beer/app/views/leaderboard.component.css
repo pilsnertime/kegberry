@@ -1,3 +1,9 @@
+:host {
+    width: 100%;
+    height: 100%;
+    overflow: scroll;
+}
+
 .leaderboard {
     display: flex;
     flex-direction: column;
@@ -5,16 +11,26 @@
     width: 100%;
     box-sizing: border-box;
     padding: 3em;
-
 }
 
 .leaderboard-title {
     font-size: 2em;
     font-weight: bold;
     color: #eee;
-    font-family: Raleway;
+    font-family: Roboto;
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+.leaderboard-users {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.leaderboard-users::-webkit-scrollbar {
+    display: none;
 }
 
 .leaderboard-user-banner-container {
@@ -52,13 +68,13 @@
 }
 
 .name {
-    font-family: Raleway;
+    font-family: Roboto;
     font-weight: bold;
     color: #eee;
 }
 
 .score {
-    font-family: Raleway;
+    font-family: Roboto;
     color: white;
 }
 
