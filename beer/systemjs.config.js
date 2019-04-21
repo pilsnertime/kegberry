@@ -24,8 +24,7 @@
       // other libraries
       'rxjs':                      'npm:rxjs',
       'angular-in-memory-web-api': 'npm:angular-in-memory-web-api',
-      'socket.io-client': 'node_modules/socket.io-client/',
-      '@ng-bootstrap/ng-bootstrap': 'node_modules/@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js'
+      'socket.io-client': 'node_modules/socket.io-client/'
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -33,9 +32,11 @@
         main: './main.js',
         defaultExtension: 'js'
       },
-      rxjs: {
-        defaultExtension: 'js'
-      },
+      'rxjs': {main: 'index.js', defaultExtension: 'js' },
+      'rxjs/ajax': {main: 'index.js', defaultExtension: 'js' },
+      'rxjs/operators': {main: 'index.js', defaultExtension: 'js' },
+      'rxjs/testing': {main: 'index.js', defaultExtension: 'js' },
+      'rxjs/webSocket': {main: 'index.js', defaultExtension: 'js' },
       'angular-in-memory-web-api': {
         main: './index.js',
         defaultExtension: 'js'

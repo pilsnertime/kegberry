@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IPourer, MessagingService, IGetLeaderboardResponse } from '../infrastructure/messaging.service';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
+import { ReplaySubject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 interface IPourWithPXWidth extends IPourer {
     width: number;
@@ -111,11 +112,13 @@ export class LeaderboardComponent {
 
         this.leaderboardUserStreamWithPixelWidth = this._leaderboardUsersStream
             .asObservable()
-            .map(leaderboard => {
-                let maxScore = leaderboard[0].amount;
-                leaderboard.map((pourer: IPourWithPXWidth) => pourer.width = (pourer.amount/maxScore)*100);
-                return leaderboard;
-            });
+            .pipe(
+                map(leaderboard => {
+                    let maxScore = leaderboard[0].amount;
+                    leaderboard.map((pourer: IPourWithPXWidth) => pourer.width = (pourer.amount/maxScore)*100);
+                    return leaderboard;
+                })
+            );
     }
 
     getColor(index: number) {
