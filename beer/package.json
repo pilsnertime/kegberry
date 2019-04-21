@@ -14,7 +14,6 @@
     }
   ],
   "dependencies": {
-    "@angular/cli": "^7.3.8",
     "@angular/common": "7.2.13",
     "@angular/compiler": "7.2.13",
     "@angular/core": "7.2.13",
@@ -37,6 +36,7 @@
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
+    "@angular/cli": "^7.3.8",
     "concurrently": "^3.0.0",
     "lite-server": "^2.2.2",
     "typescript": "^3.4.4"
