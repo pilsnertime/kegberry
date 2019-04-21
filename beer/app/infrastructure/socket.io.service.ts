@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable , BehaviorSubject } from 'rxjs';
 import * as io from 'socket.io-client';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import {BehaviorSubject} from "rxjs/Rx";
 
 @Injectable()
 export class SocketService {

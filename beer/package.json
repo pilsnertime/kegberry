@@ -14,15 +14,15 @@
     }
   ],
   "dependencies": {
-    "@angular/common": "4.4.4",
-    "@angular/compiler": "4.4.4",
-    "@angular/core": "4.4.4",
-    "@angular/forms": "4.4.4",
-    "@angular/http": "4.4.4",
-    "@angular/platform-browser": "4.4.4",
-    "@angular/platform-browser-dynamic": "4.4.4",
-    "@angular/router": "4.4.4",
-    "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.25",
+    "@angular/cli": "^7.3.8",
+    "@angular/common": "7.2.13",
+    "@angular/compiler": "7.2.13",
+    "@angular/core": "7.2.13",
+    "@angular/forms": "7.2.13",
+    "@angular/http": "7.2.13",
+    "@angular/platform-browser": "7.2.13",
+    "@angular/platform-browser-dynamic": "7.2.13",
+    "@angular/router": "7.2.13",
     "@types/node": "^10.12.0",
     "@types/socket.io": "^1.4.38",
     "@types/socket.io-client": "^1.4.32",
@@ -30,14 +30,15 @@
     "core-js": "^2.4.1",
     "flexbox": "0.0.3",
     "reflect-metadata": "^0.1.8",
-    "rxjs": "^5.0.0-beta.12",
+    "rxjs": "^6.4.0",
+    "rxjs-compat": "^6.4.0",
     "socket.io-client": "^1.5.0",
     "systemjs": "0.19.39",
-    "zone.js": "^0.6.25"
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "concurrently": "^3.0.0",
     "lite-server": "^2.2.2",
-    "typescript": "^2.0.3"
+    "typescript": "^3.4.4"
   }
 }

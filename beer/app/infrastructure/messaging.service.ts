@@ -2,9 +2,8 @@ import { IMessage, ITemperatureNotification, IGetUserResponse, IPourNotification
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { AmbianceStats } from './../views/kegStats.component';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import {Subject, Observable, BehaviorSubject} from "rxjs/Rx";
+import { Subject, Observable, BehaviorSubject, pipe } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Injectable()
 export class MessagingService {
@@ -39,7 +38,7 @@ export class MessagingService {
 
     private getUsersResponse: string = 'getUsersResponse';
     private _getUsersResponse: BehaviorSubject<IGetUserResponse> = new BehaviorSubject<IGetUserResponse>(undefined);
-    public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable().filter(res => !!res);
+    public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable().pipe(filter(res => !!res));
 
     private addUserResponse: string = 'addUserResponse';
     private _addUserResponseStream: Subject<IAddUserResponse> = new Subject<IAddUserResponse>();
