@@ -64,18 +64,17 @@ export class Users {
     }
 
     private getUsers(): void {
-        this._messagingService.sendMessage({messageName: this._messagingService.GetUsers, data: undefined});
+        this._messagingService.sendMessage(this._messagingService.GetUsers, undefined);
     }
 
     addUser(username: string): void {
         let data: IAddUserMessageData = {name: username};
-        this._messagingService.sendMessage({messageName: this._messagingService.AddUser, data: data});
+        this._messagingService.sendMessage(this._messagingService.AddUser, data);
     }
 
     onUserSelected(user: IUser): void {
         let data: ISelectUserData = {id: user.id};
-        let selectUserMessage: IMessage = {messageName: this._messagingService.SelectUser, data: data};
-        this._messagingService.sendMessage(selectUserMessage);
+        this._messagingService.sendMessage(this._messagingService.SelectUser, data);
         this.selectedUserId = user.id;
         this.userSelected.emit(user);
     }

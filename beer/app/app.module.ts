@@ -12,6 +12,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { StatisticsComponent } from './views/statistics.component';
 import { AddUserDialogComponent } from './views/add-user-dialog.component';
 import { Pouring } from './views/pouring.component';
+import { LeaderboardComponent } from './views/leaderboard.component';
+import { BreweryMixer } from './views/brewery-mixer.component';
 
 const appRoutes: Routes = [
   {
@@ -43,10 +45,12 @@ const appRoutes: Routes = [
     Pour,
     StatisticsComponent,
     AddUserDialogComponent,
-    Pouring 
+    Pouring,
+    LeaderboardComponent,
+    BreweryMixer
   ],
   bootstrap:    [ RouterComponent ],
-  providers: [MessagingService]
+  providers: [ MessagingService ]
 })
 
 export class AppModule { }
