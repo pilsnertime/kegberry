@@ -1,8 +1,0 @@
-<div class="home">
-    <users-component *ngIf="!this._pouring"
-        (userSelected)="onUserSelected($event)">
-    </users-component>
-    <pouring *ngIf="this._pouring"
-        (pourFinished)="onPourFinished($event)">
-    </pouring>
-</div>

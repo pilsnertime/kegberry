@@ -1,8 +1,8 @@
 node_modules/
 beer/node_modules/
-beer/app/*js.map
-beer/app/**/*js.map
-beer/app/*.js
-beer/app/**/*.js
+beer/*js.map
+beer/**/*js.map
+beer/*.js
+beer/**/*.js
 npm-debug.log
 .vscode/

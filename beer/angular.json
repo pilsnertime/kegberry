@@ -1,0 +1,136 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "kegberry-app": {
+      "root": "projects/kegberry-app/",
+      "sourceRoot": "projects/kegberry-app/src",
+      "projectType": "application",
+      "prefix": "app",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist/kegberry-app",
+            "index": "projects/kegberry-app/src/index.html",
+            "main": "projects/kegberry-app/src/main.ts",
+            "polyfills": "projects/kegberry-app/src/polyfills.ts",
+            "tsConfig": "projects/kegberry-app/tsconfig.app.json",
+            "assets": [
+              "projects/kegberry-app/src/favicon.ico",
+              "projects/kegberry-app/src/assets"
+            ],
+            "styles": [
+              "projects/kegberry-app/src/styles.css"
+            ],
+            "scripts": [],
+            "es5BrowserSupport": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/kegberry-app/src/environments/environment.ts",
+                  "with": "projects/kegberry-app/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "kegberry-app:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "kegberry-app:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "kegberry-app:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/kegberry-app/src/test.ts",
+            "polyfills": "projects/kegberry-app/src/polyfills.ts",
+            "tsConfig": "projects/kegberry-app/tsconfig.spec.json",
+            "karmaConfig": "projects/kegberry-app/karma.conf.js",
+            "styles": [
+              "projects/kegberry-app/src/styles.css"
+            ],
+            "scripts": [],
+            "assets": [
+              "projects/kegberry-app/src/favicon.ico",
+              "projects/kegberry-app/src/assets/*"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/kegberry-app/tsconfig.app.json",
+              "projects/kegberry-app/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "kegberry-app-e2e": {
+      "root": "projects/kegberry-app-e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/kegberry-app-e2e/protractor.conf.js",
+            "devServerTarget": "kegberry-app:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "kegberry-app:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": "projects/kegberry-app-e2e/tsconfig.e2e.json",
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "kegberry-app"
+}
