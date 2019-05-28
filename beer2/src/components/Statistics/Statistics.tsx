@@ -3,6 +3,7 @@ import { Leaderboard } from '../Leaderboard/Leaderboard';
 import './Statistics.css';
 import { Link } from 'react-router-dom';
 import users from '../../assets/users.png';
+import { BreweryMixer } from '../BreweryMixer/BreweryMixer';
 
 export function Statistics() {
   return (
@@ -15,6 +16,7 @@ export function Statistics() {
         </div>
       </Link>
       <Leaderboard/>
+      <BreweryMixer/>
     </Fragment>
   );
 }
