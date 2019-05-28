@@ -1,0 +1,56 @@
+:host {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background: pink;
+}
+
+.users-container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+}
+
+.user-container {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 0.35em;
+}
+
+.user-name {
+  color: white;
+  font-family: Roboto;
+  font-weight: bold;
+}
+
+.user-icon {
+  margin: 5px;
+  flex: 1 0 auto;
+  border-radius: 50%;
+  width: 9em;
+  height: 9em;
+  line-height: 9em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.user-icon-selected {
+  opacity: 0.2;
+  margin: 5px;
+  flex: 1 0 auto;
+  border-radius: 50%;
+  width: 9em;
+  height: 9em;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 9em;
+}
+
+.user-icon:hover {
+  opacity: 0.6;
+}

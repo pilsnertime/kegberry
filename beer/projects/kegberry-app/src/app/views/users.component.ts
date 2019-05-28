@@ -1,5 +1,6 @@
 import { MessagingService, IGetUserResponse, IUser, IAddUserMessageData, IMessage, ISelectUserData, IAddUserResponse } from './../infrastructure/messaging.service';
 import { Component, Injectable, EventEmitter, Output } from '@angular/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'users-component',
@@ -8,8 +9,8 @@ import { Component, Injectable, EventEmitter, Output } from '@angular/core';
 })
 export class Users {
     private _users: IUser[] = [];
-    private _usernameInput: string = "";
     private _selectedUserId: string = "";
+    private _subscriptions: Subscription[];
     addUserDialogActive: boolean = false;
 
     @Output() userSelected = new EventEmitter();
@@ -17,21 +18,27 @@ export class Users {
     constructor(@Injectable() private _messagingService: MessagingService) {}
 
     ngOnInit(): void {
-        this._messagingService.readyStream.subscribe(() => {
-            this.getUsers();
-        });
+        this._subscriptions = [
+            this._messagingService.readyStream.subscribe(() => {
+                this.getUsers();
+            }),
 
-        this._messagingService.getUsersResponseStream.subscribe((response: IGetUserResponse) => {
-            if (response !== undefined) {
-                this.users = response.users;
-            }
-        });
+            this._messagingService.getUsersResponseStream.subscribe((response: IGetUserResponse) => {
+                if (response !== undefined) {
+                    this.users = response.users;
+                }
+            }),
 
-        this._messagingService.addUserResponseStream.subscribe((user: IAddUserResponse) => {
-            if (user !== undefined) {
-                this.users.push(user);
-            }
-        });
+            this._messagingService.addUserResponseStream.subscribe((user: IAddUserResponse) => {
+                if (user !== undefined) {
+                    this.users.push(user);
+                }
+            })
+        ]
+    }
+
+    ngOnDestroy(): void {
+        this._subscriptions.forEach(sub => sub.unsubscribe());        
     }
 
     get users(): IUser[] {
@@ -40,19 +47,6 @@ export class Users {
 
     set users(users: IUser[]) {
         this._users = users;
-    }
-
-    getUserProfileAssetPath(user: IUser, index: number): string {
-        // todo: implement user images
-        return 'url("./assets/profile_' + index + '")';
-    }
-
-    get usernameInput(): string {
-        return this._usernameInput;
-    }
-
-    set usernameInput(name: string) {
-        this._usernameInput = name;
     }
 
     get selectedUserId(): string {

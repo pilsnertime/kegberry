@@ -1,11 +1,12 @@
-import { IMessage, ITemperatureNotification, IGetUserResponse, IPourNotification } from './messaging.service';
-import { Injectable } from '@angular/core';
-import { AmbianceStats } from './../views/kegStats.component';
-import { Subject, Observable, BehaviorSubject, pipe, ReplaySubject } from 'rxjs';
+import { Subject, Observable, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 
-@Injectable()
-export class MessagingService {
+export const GetUsers: string = 'getUsers';
+export const AddUser: string = 'addUser';
+export const SelectUser: string = 'selectUser';
+export const GetLeaderboard: string = 'getTopPourers';
+
+export class MessagingService implements IMessagingService {
     private _url = 'ws://kegberry:8080';
     private socket: WebSocket;
 
@@ -14,13 +15,6 @@ export class MessagingService {
 
     private _onClosed: Subject<any> = new Subject<any>();
     public closedStream: Observable<any> = this._onClosed.asObservable();
-
-    // message names to server
-    // todo: refactor message names to a stand alone class/interface/
-    public GetUsers: string = 'getUsers';
-    public AddUser: string = 'addUser';
-    public SelectUser: string = 'selectUser';
-    public GetLeaderboard: string = 'getTopPourers';
 
     // message streams
     private pourNotification: string = 'pourUpdate';
@@ -36,23 +30,23 @@ export class MessagingService {
     currentUserTimeoutNotification$: Observable<any> = this._currentUserTimeoutNotification.asObservable();
 
     private getUsersResponse: string = 'getUsersResponse';
-    private _getUsersResponse: BehaviorSubject<IGetUserResponse> = new BehaviorSubject<IGetUserResponse>(undefined);
-    public getUsersResponseStream: Observable<IGetUserResponse> = this._getUsersResponse.asObservable().pipe(filter(res => !!res));
+    private _getUsersResponse: BehaviorSubject<IGetUserResponse|undefined> = new BehaviorSubject<IGetUserResponse|undefined>(undefined);
+    public getUsersResponseStream: Observable<IGetUserResponse|undefined> = this._getUsersResponse.asObservable().pipe(filter(res => !!res));
 
     private addUserResponse: string = 'addUserResponse';
-    private _addUserResponseStream: Subject<IAddUserResponse> = new Subject<IAddUserResponse>();
-    public addUserResponseStream: Observable<IAddUserResponse> = this._addUserResponseStream.asObservable();
+    private _addUserResponseStream: Subject<IUser> = new Subject<IUser>();
+    public addUserResponseStream: Observable<IUser> = this._addUserResponseStream.asObservable().pipe(filter(res => !!res));
 
     private getLeaderboardResponse: string = 'getTopPourersResponse';
     private _getLeaderboardResponseStream: Subject<IGetLeaderboardResponse> = new Subject<IGetLeaderboardResponse>();
     public getLeaderboardResponseStream: Observable<IGetLeaderboardResponse> = this._getLeaderboardResponseStream.asObservable();
 
     constructor() {
+        this.socket = new WebSocket(this._url);
         this.connectToSocket();
     }
 
-    connectToSocket(): void {
-        this.socket = new WebSocket(this._url);
+    private connectToSocket(): void {
         // Open the socket
         this.socket.onopen = (onOpenEvent) => {
             
@@ -72,12 +66,13 @@ export class MessagingService {
         };
     }
 
-    processMessage(msg: string): void {
+    private processMessage(msg: string): void {
         let message: IResponseMessage;
         try {
             message = JSON.parse(msg);
         } catch (e) {
             console.log('Error parsing message:' + e);
+            return;
         }
 
         switch(message.messageName) {
@@ -108,11 +103,22 @@ export class MessagingService {
         }
     }
 
-    sendMessage(messageName: string, data: any) {
+    sendMessage(messageName: string, data?: any): void {
         let msg = {messageName, data};
         console.log(msg);
         this.socket.send(JSON.stringify(msg));
     }
+}
+
+export interface IMessagingService {
+    sendMessage(messageName: string, data?: any): void;
+    pourNotificationStream: Observable<IPourNotification>;
+    temperatureMessageStream: Observable<ITemperatureNotification>;
+    currentUserTimeoutNotification$: Observable<any>;
+    addUserResponseStream: Observable<IUser>;
+    getUsersResponseStream: Observable<IGetUserResponse|undefined>;
+    getLeaderboardResponseStream: Observable<IGetLeaderboardResponse>;
+    readyStream: Observable<any>;
 }
 
 export interface IMessage {
@@ -141,8 +147,8 @@ export interface IGetUserResponse {
     users: IUser[];
 }
 
-export interface IAddUserResponse extends IUser {
-}
+// export interface IAddUserResponse extends IUser {
+// }
 
 export interface IGetLeaderboardResponse {
     pourers: IPourer[];

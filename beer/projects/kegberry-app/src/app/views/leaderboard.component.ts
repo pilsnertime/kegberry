@@ -67,30 +67,6 @@ export class LeaderboardComponent {
 
     leaderboardUserStreamWithPixelWidth;
 
-
-    private _leaderboardUsersMock: IPourer[] = [
-        {
-            userId: "asdfasdf",
-            amount: 1200,
-            userName: "Tomas"
-        },
-        {
-            userId: "asdfasdf",
-            amount: 800,
-            userName: "Tomas2"
-        },
-        {
-            userId: "asdfasdf",
-            amount: 400,
-            userName: "Tomas3"
-        },
-        {
-            userId: "asdfasdf",
-            amount: 100,
-            userName: "Tomas4"
-        },
-    ];
-
     constructor(private _messageService: MessagingService) {
         console.log('leaderboard component constructor');
         this._messageService.sendMessage(this._messageService.GetLeaderboard, undefined);
