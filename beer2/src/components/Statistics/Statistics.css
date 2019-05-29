@@ -1,0 +1,32 @@
+:host { 
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.brewery {
+  position: absolute;
+  bottom: -2em;
+  right: 3em;
+}
+
+.home-icon {
+  position: absolute;
+  right: 0;
+  margin: 5px;
+  border-radius: 50%;
+  width: 5em;
+  height: 5em;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 9em;
+  margin-right: 2em;
+  margin-top: 2em;
+}
+
+.home-icon:hover {
+  opacity: 0.6;
+}

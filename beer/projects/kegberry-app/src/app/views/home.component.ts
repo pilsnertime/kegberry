@@ -26,5 +26,4 @@ export class HomeComponent {
   onPourFinished(_) {
     this.pouring = false;
   }
-
 }

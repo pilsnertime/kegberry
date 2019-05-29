@@ -1,0 +1,26 @@
+.home {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2em;
+  display: flex;
+  justify-content: center;
+  -webkit-flex-flow: row wrap;
+  flex-flow: row wrap;
+  background-color: #212121;
+  color: white;
+}
+
+root {
+  height: 100vh;
+  width: 100vw;
+}
+
+body {
+  background-color: #212121;
+  color: white;
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}

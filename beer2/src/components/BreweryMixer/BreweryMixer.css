@@ -1,6 +1,13 @@
+.brewery {
+  position: absolute;
+  bottom: 1em;
+  right: 0em;
+  margin-right: 2em;
+}
+
 .wave-svg {
-    height: 0px;
-    width: 0px;
+  height: 0px;
+  width: 0px;
 }
 
 .c-step-title {
@@ -69,6 +76,7 @@
   top: 122px;
   left: 187px;
   right: 0;
+  margin: auto;
   -webkit-transform: translateX(-50%);
   transform: translateX(-50%);
   overflow: hidden;
@@ -101,14 +109,14 @@
 .c-boiling .water .wave.back {
   top: 62px;
   right: 0;
-  fill: #FBAB29;
+  fill: #fbab29;
   -webkit-animation: wave-back 1.4s infinite linear;
   animation: wave-back 1.4s infinite linear;
 }
 .c-boiling .water .wave.front {
   top: 62px;
   left: 0;
-  fill: #F9DF00;
+  fill: #f9df00;
   margin-bottom: -1px;
   -webkit-animation: wave-front 0.7s infinite linear;
   animation: wave-front 0.7s infinite linear;

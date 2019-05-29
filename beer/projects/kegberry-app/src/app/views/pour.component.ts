@@ -19,15 +19,13 @@ export class Pour {
     constructor(private _messageService: MessagingService) { 
         this.progress = 0;
         this._messageService.pourNotificationStream.subscribe((data: IPourNotification) => {
-            if (data !== undefined)
-            {
+            if (data !== undefined) {
                 this.progress = (data.totalPour*1200)/5;
                 console.log('totalpour' + data.totalPour);
                 console.log(this.progress);
                 this.currentUserName = data.currentUser.name;
 
-                if (data.isFinished)
-                {
+                if (data.isFinished) {
                     setTimeout(() => {
                         this.progress = 0;
                         this.currentUserName = 'default user'
@@ -38,13 +36,11 @@ export class Pour {
         });
     }
 
-    get progress(): number
-    {
+    get progress(): number {
         return this._progress
     }
 
-    set progress(progress: number)
-    {
+    set progress(progress: number) {
         this._progress = progress > 100 ? 100 : progress;
     }
 
@@ -52,13 +48,11 @@ export class Pour {
         return this._progress * this._maxBeerHeight / 100;
     }
 
-    get currentUserName(): string
-    {
+    get currentUserName(): string {
         return this._currentUserName;
     }
 
-    set currentUserName(currentUserName: string)
-    {
+    set currentUserName(currentUserName: string) {
         this._currentUserName = currentUserName;
     }
 }

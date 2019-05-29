@@ -6,15 +6,11 @@ import { MessagingService } from '../infrastructure/messaging.service';
     templateUrl: 'add-user-dialog.component.html',
     styleUrls: ['add-user-dialog.component.css']
 })
-export class AddUserDialogComponent implements OnInit {
+export class AddUserDialogComponent {
     private _usernameInput: string = "";
 
     @Output() commit = new EventEmitter<string>();
     @Output() cancel = new EventEmitter<any>();
-
-    constructor(@Injectable() private _messagingService: MessagingService) {}
-
-    ngOnInit(): void { }
 
     onCommit() {
         this.commit.emit(this._usernameInput);
